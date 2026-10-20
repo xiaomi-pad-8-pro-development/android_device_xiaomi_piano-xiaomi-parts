@@ -1,6 +1,6 @@
 # P81C firmware host checks
 
-Run from the device/xiaomi/piano-parts checkout:
+Run from the device/xiaomi/piano-xiaomi-parts checkout:
 
 ```sh
 rtk proxy javac -d /tmp/piano-suota-tests src/org/lineageos/pianoparts/stylus/firmware/FirmwareImage.java src/org/lineageos/pianoparts/stylus/firmware/MippV2Protocol.java src/org/lineageos/pianoparts/stylus/firmware/SuotaV1.java tests/firmware/SuotaV1Test.java

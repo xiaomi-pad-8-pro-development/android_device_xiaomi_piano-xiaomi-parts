@@ -2,7 +2,7 @@
 
 The settings app for the tablet's Xiaomi features. Android 17.
 
-Goes in `device/xiaomi/piano-parts`. `pianoparts.mk` places the Xiaomi
+Goes in `device/xiaomi/piano-xiaomi-parts`. `pianoparts.mk` places the Xiaomi
 settings entry for the ROM being built: Evolution X when `vendor/evolution`
 exists, LineageOS otherwise. With
 [ALXPParts](https://github.com/xiaomi-pad-8-pro-development/android_device_xiaomi_piano-alxp-parts)
