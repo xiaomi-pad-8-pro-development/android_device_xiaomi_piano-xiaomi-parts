@@ -8,6 +8,12 @@ exists, LineageOS otherwise. With
 [ALXPParts](https://github.com/xiaomi-pad-8-pro-development/android_device_xiaomi_piano-alxp-parts)
 synced to `device/xiaomi/piano-alxp-parts`, it is included too.
 
+The ROM changes the features need (stylus laser pointer and palette, keyboard
+cover layout, touchpad scrolling, the Settings and LineageParts entries Parts
+replaces, its Quick Settings category) are in `rom-patches/`. `vendorsetup.sh`
+applies them when `build/envsetup.sh` is sourced, so a build without this
+repository keeps the stock ROM behaviour.
+
 ## Features
 
 - Xiaomi Pen: pairing, battery, pressure, button shortcuts, color picker
