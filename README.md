@@ -1,4 +1,4 @@
-# Xiaomi Parts for Xiaomi Pad 8 Pro (piano)
+# Xiaomi Parts for the Xiaomi Pad 8 Pro (piano)
 
 The settings app for the tablet's Xiaomi features. Android 17.
 
