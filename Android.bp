@@ -9,13 +9,13 @@ filegroup {
     srcs: ["src/org/lineageos/pianoparts/pencilengine/*.java"],
 }
 
-// The sync helper selects one of the two reviewed Settings placements.
-android_app {
-    name: "PianoParts",
+// The same app with the Settings entry placed for LineageOS (PianoParts) or
+// Evolution X (PianoPartsEvox). pianoparts.mk installs the one for the ROM.
+java_defaults {
+    name: "PianoParts_defaults",
     // Shared with Android 16 and 17. SettingsLib requires the current
     // platform API (37 on EvoX A17), so a fixed 36 fails manifest merging.
     min_sdk_version: "current",
-    manifest: "@PIANO_PARTS_MANIFEST@",
     srcs: [
         "src/**/*.java",
         "src/**/*.kt",
@@ -38,4 +38,17 @@ android_app {
     optimize: {
         proguard_flags_files: ["proguard.flags"],
     },
+}
+
+android_app {
+    name: "PianoParts",
+    defaults: ["PianoParts_defaults"],
+    manifest: "AndroidManifest.xml",
+}
+
+android_app {
+    name: "PianoPartsEvox",
+    defaults: ["PianoParts_defaults"],
+    manifest: "AndroidManifestEvox.xml",
+    overrides: ["PianoParts"],
 }

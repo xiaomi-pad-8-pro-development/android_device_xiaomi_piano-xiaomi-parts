@@ -1,12 +1,12 @@
 # Xiaomi Parts for Xiaomi Pad 8 Pro (piano)
 
-The settings app for the tablet's Xiaomi features, shared by every ROM and
-by Android 16 and 17.
+The settings app for the tablet's Xiaomi features. Android 17.
 
-Goes in `device/xiaomi/piano-parts`. The sync script on the
-[main branch](../../tree/main) checks it out and runs
-`select-rom.py lineage` or `evox`, which places the Xiaomi settings entry in
-the right spot for that ROM.
+Goes in `device/xiaomi/piano-parts`. `pianoparts.mk` places the Xiaomi
+settings entry for the ROM being built: Evolution X when `vendor/evolution`
+exists, LineageOS otherwise. With
+[ALXPParts](https://github.com/xiaomi-pad-8-pro-development/android_device_xiaomi_piano-alxp-parts)
+synced to `device/xiaomi/piano-alxp-parts`, it is included too.
 
 ## Features
 
