@@ -886,16 +886,22 @@ class StylusController(context: Context, handler: Handler) : AutoCloseable {
             closeGatt("MIPP FE12 notification descriptor missing")
             return
         }
-        if (reply.properties and BluetoothGattCharacteristic.PROPERTY_NOTIFY == 0 ||
-            command.properties and BluetoothGattCharacteristic.PROPERTY_WRITE == 0 ||
-            !client.setCharacteristicNotification(reply, true)
-        ) {
-            closeGatt("MIPP notification/write properties or local subscription rejected")
+        // Like stock, take whatever the pen revision offers: FE12 may notify or
+        // indicate, FE11 may only accept writes without response, and the local
+        // subscription result is advisory.
+        val notify = reply.properties and BluetoothGattCharacteristic.PROPERTY_NOTIFY != 0
+        if (!notify && reply.properties and BluetoothGattCharacteristic.PROPERTY_INDICATE == 0) {
+            closeGatt("MIPP FE12 neither notifies nor indicates: 0x${reply.properties.toString(16)}")
             return
+        }
+        if (!client.setCharacteristicNotification(reply, true)) {
+            Log.w(TAG, "MIPP FE12 local subscription rejected; continuing as stock does")
         }
         gattPhase = "MIPP FE12 CCCD write"
         armGattTimeout()
-        val result = client.writeDescriptor(descriptor, BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE)
+        val result = client.writeDescriptor(descriptor,
+            if (notify) BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
+            else BluetoothGattDescriptor.ENABLE_INDICATION_VALUE)
         if (result != BluetoothStatusCodes.SUCCESS) closeGatt("MIPP FE12 CCCD request rejected: $result")
     }
 
@@ -996,7 +1002,7 @@ class StylusController(context: Context, handler: Handler) : AutoCloseable {
         val write = pendingWrites.removeFirst()
         activeWrite = write
         armGattTimeout()
-        if (client.writeCharacteristic(command, write.bytes, BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT) !=
+        if (client.writeCharacteristic(command, write.bytes, command.writeType) !=
             BluetoothStatusCodes.SUCCESS
         ) closeGatt()
     }
