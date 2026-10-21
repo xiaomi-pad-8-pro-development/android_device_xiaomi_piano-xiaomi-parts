@@ -11,6 +11,3 @@ PRODUCT_PACKAGES += PianoPencilEngine
 endif
 PRODUCT_COPY_FILES += \
     device/xiaomi/piano-xiaomi-parts/privapp-permissions-pianoparts.xml:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/permissions/privapp-permissions-pianoparts.xml
-
-# ALXP Features, when device/xiaomi/piano-alxp-parts is synced.
-$(call inherit-product-if-exists, device/xiaomi/piano-alxp-parts/product.mk)
