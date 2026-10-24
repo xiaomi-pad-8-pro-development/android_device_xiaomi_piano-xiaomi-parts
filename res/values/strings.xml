@@ -5,7 +5,6 @@
     <string name="thermal_profile_title">Thermal profile</string>
     <string name="thermal_profile_default">Default</string>
     <string name="thermal_profile_game">Game</string>
-    <string name="touch_game_mode_title">Game touch</string>
     <!-- Color scheme, as stock HyperOS names it -->
     <string name="color_scheme_title">Color scheme</string>
     <string name="color_scheme_summary">Colors, color temperature and adaptive colors</string>
@@ -83,7 +82,6 @@
     <string name="true_tone_summary">Adjust colors to ambient light</string>
     <string name="thermal_game_title">Game thermal profile</string>
     <string name="thermal_game_summary">Allow more heat for higher sustained performance</string>
-    <string name="touch_game_mode_summary">Faster touch response with less edge rejection</string>
     <string name="bypass_charging_summary">While plugged in, power the tablet from the charger and rest the battery</string>
     <string name="keyboard_cover_title">Keyboard cover settings</string>
     <string name="keyboard_layout_title">Shortcuts, layout and pointer</string>
