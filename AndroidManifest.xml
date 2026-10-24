@@ -58,19 +58,6 @@
         </service>
 
         <service
-            android:name=".TouchGameModeTileService"
-            android:icon="@drawable/ic_touch_tile"
-            android:label="@string/touch_game_mode_title"
-            android:exported="true"
-            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
-            <intent-filter>
-                <action android:name="android.service.quicksettings.action.QS_TILE" />
-            </intent-filter>
-            <meta-data android:name="android.service.quicksettings.TILE_CATEGORY"
-                android:value="org.lineageos.qs.CATEGORY_DEVICE" />
-        </service>
-
-        <service
             android:name=".SunlightModeTileService"
             android:icon="@drawable/ic_sunlight_tile"
             android:label="@string/sunlight_mode_title"
