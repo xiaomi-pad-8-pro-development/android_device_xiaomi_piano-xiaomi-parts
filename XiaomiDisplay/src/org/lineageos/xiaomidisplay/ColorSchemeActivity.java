@@ -2,16 +2,16 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package org.lineageos.pianoparts;
+package org.lineageos.xiaomidisplay;
 
 import android.os.Bundle;
 
 import com.android.settingslib.collapsingtoolbar.CollapsingToolbarBaseActivity;
 
 /**
- * The HyperOS reading mode page.
+ * The HyperOS color scheme page.
  */
-public class ReadingModeActivity extends CollapsingToolbarBaseActivity {
+public class ColorSchemeActivity extends CollapsingToolbarBaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,7 +19,7 @@ public class ReadingModeActivity extends CollapsingToolbarBaseActivity {
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .replace(com.android.settingslib.collapsingtoolbar.R.id.content_frame,
-                            new ReadingModeFragment())
+                            new ColorSchemeFragment())
                     .commit();
         }
     }

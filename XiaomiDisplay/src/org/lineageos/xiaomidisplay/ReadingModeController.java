@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package org.lineageos.pianoparts;
+package org.lineageos.xiaomidisplay;
 
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
@@ -62,7 +62,7 @@ public class ReadingModeController {
     private static final int FEATURE_RHYTHMIC = 54;
     private static final int NOISE_SIZE = 256;
 
-    private final PianoPartsApp mApp;
+    private final DisplayApplication mApp;
     private final ContentResolver mResolver;
     private final WindowManager mWindowManager;
     private View mTexture;
@@ -74,7 +74,7 @@ public class ReadingModeController {
         }
     };
 
-    public ReadingModeController(PianoPartsApp app) {
+    public ReadingModeController(DisplayApplication app) {
         mApp = app;
         mResolver = app.getContentResolver();
         mWindowManager = app.getSystemService(WindowManager.class);

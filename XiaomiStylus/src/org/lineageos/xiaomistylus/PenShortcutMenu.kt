@@ -89,7 +89,7 @@ internal class PenShortcutMenu(private val context: Context, private val handler
         } catch (exception: RuntimeException) {
             Log.w("PianoStylus", "Pen shortcut receiver unavailable", exception)
         }
-        // SystemUI uses android.uid.systemui, unlike system-UID PianoParts.
+        // SystemUI uses android.uid.systemui, unlike system-UID XiaomiStylus.
         // Its state broadcast crosses UIDs, so restrict the exported receiver
         // to the signature STATUS_BAR permission held by SystemUI.
         try {

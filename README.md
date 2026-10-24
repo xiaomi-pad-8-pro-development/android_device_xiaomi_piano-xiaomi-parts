@@ -10,7 +10,7 @@ below; the device tree builds without this repository.
 | `XiaomiStylus` | Focus Pen: pairing, battery, pressure, button shortcuts, laser pointer, palette, firmware, 120 Hz while in use (Settings > Connected devices) |
 | `XiaomiKeyboard` | Keyboard cover: settings, shortcut keys, keyboard and MCU firmware, touchpad scrolling (Settings > Connected devices) |
 | `XiaomiBypass` | Bypass charging Quick Settings tile |
-| `PianoParts` | Reading mode, sunlight mode, True Tone, color scheme, touch panel rotation |
+| `XiaomiDisplay` | Reading mode, sunlight mode, True Tone, color scheme (Settings > Display), touch panel rotation |
 | `PianoPencilEngine` | PencilEngine service used by Xiaomi Notes for pen drawing modes |
 
 The ROM changes the features need (stylus laser pointer and palette, keyboard

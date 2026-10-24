@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package org.lineageos.pianoparts;
+package org.lineageos.xiaomidisplay;
 
 import android.service.quicksettings.Tile;
 import android.service.quicksettings.TileService;
@@ -22,7 +22,7 @@ public class TrueToneTileService extends TileService {
     @Override
     public void onClick() {
         super.onClick();
-        PianoPartsApp app = (PianoPartsApp) getApplication();
+        DisplayApplication app = (DisplayApplication) getApplication();
         app.setTrueTone(!app.isTrueTone());
         updateTile();
     }
@@ -32,7 +32,7 @@ public class TrueToneTileService extends TileService {
         if (tile == null) {
             return;
         }
-        boolean enabled = ((PianoPartsApp) getApplication()).isTrueTone();
+        boolean enabled = ((DisplayApplication) getApplication()).isTrueTone();
         tile.setState(enabled ? Tile.STATE_ACTIVE : Tile.STATE_INACTIVE);
         tile.updateTile();
     }

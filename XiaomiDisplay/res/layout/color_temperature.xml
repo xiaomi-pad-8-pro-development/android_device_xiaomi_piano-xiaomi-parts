@@ -11,7 +11,7 @@
     android:paddingTop="12dp"
     android:paddingBottom="12dp">
 
-    <org.lineageos.pianoparts.ColorPickerView
+    <org.lineageos.xiaomidisplay.ColorPickerView
         android:id="@+id/color_picker"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

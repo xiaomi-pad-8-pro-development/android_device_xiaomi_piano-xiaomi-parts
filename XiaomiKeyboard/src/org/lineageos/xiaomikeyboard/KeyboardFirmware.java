@@ -19,7 +19,7 @@ import java.security.NoSuchAlgorithmException;
  */
 final class KeyboardFirmware {
 
-    private static final String TAG = "PianoPartsKeyboard";
+    private static final String TAG = "XiaomiKeyboard";
 
     static final int CHUNK = 52;
 

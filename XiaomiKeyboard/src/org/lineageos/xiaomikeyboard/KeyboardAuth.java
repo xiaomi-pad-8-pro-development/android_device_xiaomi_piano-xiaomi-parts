@@ -31,7 +31,7 @@ import java.util.Arrays;
  */
 final class KeyboardAuth {
 
-    private static final String TAG = "PianoPartsKeyboardAuth";
+    private static final String TAG = "XiaomiKeyboardAuth";
 
     private static final String SERVICE_PACKAGE = "com.xiaomi.devauth";
     private static final String SERVICE_CLASS = "com.xiaomi.devauth.MiDevAuthService";

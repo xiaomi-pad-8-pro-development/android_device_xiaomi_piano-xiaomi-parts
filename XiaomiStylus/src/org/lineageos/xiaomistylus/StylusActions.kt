@@ -124,5 +124,5 @@ object StylusActions {
         }
     }
 
-    private const val TAG = "PianoParts.Actions"
+    private const val TAG = "XiaomiStylus.Actions"
 }

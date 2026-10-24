@@ -2,11 +2,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package org.lineageos.pianoparts;
+package org.lineageos.xiaomidisplay;
 
 import android.app.Application;
-import android.compat.Compatibility;
-import android.content.pm.ActivityInfo;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.hardware.display.DisplayManager;
@@ -20,21 +18,15 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.Display;
 
-import com.android.internal.compat.CompatibilityChangeConfig;
-import com.android.internal.compat.IPlatformCompat;
-
-
-import java.util.Set;  import lineageos.providers.LineageSettings;
-
 import vendor.xiaomi.hw.touchfeature.ITouchFeature;
 
 /**
  * Like HyperOS, tell the touch panel which way the screen is rotated so it
  * applies the matching edge palm rejection.
  */
-public class PianoPartsApp extends Application {
+public class DisplayApplication extends Application {
 
-    private static final String TAG = "PianoParts";
+    private static final String TAG = "XiaomiDisplay";
 
     private static final String TOUCH_FEATURE_SERVICE =
             "vendor.xiaomi.hw.touchfeature.ITouchFeature/default";
@@ -50,10 +42,6 @@ public class PianoPartsApp extends Application {
     private static final int FEATURE_TRUE_TONE = 32;
     private static final int FEATURE_COLOR_TEMP = 23;
     static final int FEATURE_SUNLIGHT_SCREEN = 12;
-
-    private static final String CAMERA_PACKAGE = "com.android.camera";
-    // CameraServiceProxy.OVERRIDE_CAMERA_ROTATE_AND_CROP_DEFAULTS
-    private static final long CAMERA_ROTATE_AND_CROP_OVERRIDE = 189229956L;
 
     private static final String PREFS_NAME = "piano_parts";
     private static final String KEY_TRUE_TONE = "true_tone";
@@ -95,43 +83,15 @@ public class PianoPartsApp extends Application {
         if (isTrueTone()) {
             setDisplayFeature(FEATURE_TRUE_TONE, 1);
         }
-        allowCameraLandscape();
-        // Like stock, keep the charging light on when full. Only set once,
-        // so the Battery light setting stays the user's choice.
-        if (LineageSettings.System.getString(getContentResolver(),
-                LineageSettings.System.BATTERY_LIGHT_FULL_CHARGE_DISABLED) == null) {
-            LineageSettings.System.putInt(getContentResolver(),
-                    LineageSettings.System.BATTERY_LIGHT_FULL_CHARGE_DISABLED, 0);
-        }
-        new VolumeBoostNotifier(this);
         mReadingModeController = new ReadingModeController(this);
         mSunlightModeController = new SunlightModeController(this);
         mSunlightModeController.setEnabled(isSunlightMode());
-    }
-
-    /**
-     * MiuiCamera asks for portrait, which Android letterboxes on the landscape
-     * tablet. HyperOS lets it use the whole screen, so let the camera ignore
-     * its orientation request here. The app also rotates its own preview, so
-     * turn off the camera service's automatic rotate-and-crop for it.
-     */
-    private void allowCameraLandscape() {
-        try {
-            IPlatformCompat compat = IPlatformCompat.Stub.asInterface(
-                    ServiceManager.getService(Context.PLATFORM_COMPAT_SERVICE));
-            compat.setOverrides(new CompatibilityChangeConfig(new Compatibility.ChangeConfig(
-                    Set.of(ActivityInfo.OVERRIDE_ANY_ORIENTATION_TO_USER,
-                            CAMERA_ROTATE_AND_CROP_OVERRIDE), Set.of())), CAMERA_PACKAGE);
-        } catch (RemoteException | RuntimeException e) {
-            Log.e(TAG, "Failed to let the camera use landscape", e);
-        }
     }
 
     private SharedPreferences getPrefs() {
         Context context = createDeviceProtectedStorageContext();
         return context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
     }
-
 
     boolean isTrueTone() {
         return getPrefs().getBoolean(KEY_TRUE_TONE, false);

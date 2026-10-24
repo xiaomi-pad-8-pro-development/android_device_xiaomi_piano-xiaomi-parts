@@ -35,7 +35,7 @@ import java.util.Map;
  */
 class TouchpadFlickManager {
 
-    private static final String TAG = "PianoParts.TouchpadFlick";
+    private static final String TAG = "XiaomiKeyboard.TouchpadFlick";
 
     private static final String PROFILE = "/odm/etc/flick_profile.xml";
     private static final String ENABLE_FLICK_OPTIMIZATION = "enable_flick_optimization";
@@ -84,7 +84,7 @@ class TouchpadFlickManager {
             return;
         }
         // Global settings survive a process crash. Never inherit a stale
-        // touchpad-down flag from the previous PianoParts process.
+        // touchpad-down flag from the previous XiaomiKeyboard process.
         if (!putInt(IS_TOUCHPAD_SCROLL, 0)) {
             return;
         }

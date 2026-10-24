@@ -434,7 +434,7 @@ class KeyHandler(private val context: Context) : DeviceKeyHandler {
     )
 
     companion object {
-        private const val TAG = "PianoParts.KeyHandler"
+        private const val TAG = "XiaomiStylus.KeyHandler"
         private const val PARTS_PACKAGE = "org.lineageos.xiaomistylus"
         private const val LONG_PRESS_TIMEOUT_MS = 380L
         private const val RECENT_EVENT_LIMIT = 512

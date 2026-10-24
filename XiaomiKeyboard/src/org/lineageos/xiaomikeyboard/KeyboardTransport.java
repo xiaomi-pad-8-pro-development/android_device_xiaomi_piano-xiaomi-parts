@@ -21,7 +21,7 @@ import java.util.Arrays;
  */
 final class KeyboardTransport {
 
-    private static final String TAG = "PianoPartsKeyboard";
+    private static final String TAG = "XiaomiKeyboard";
 
     private static final String SERVICE =
             "vendor.xiaomi.hardware.keyboardnanoapp_aidl.IKeyboardNanoapp_aidl/default";
@@ -88,7 +88,7 @@ final class KeyboardTransport {
 
     KeyboardTransport(Listener listener) {
         mListener = listener;
-        HandlerThread thread = new HandlerThread("PianoPartsKeyboard");
+        HandlerThread thread = new HandlerThread("XiaomiKeyboard");
         thread.start();
         mHandler = new Handler(thread.getLooper());
     }

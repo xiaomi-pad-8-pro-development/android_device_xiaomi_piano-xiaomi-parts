@@ -13,7 +13,7 @@ import java.util.function.BooleanSupplier;
  * the pogo controller at 0x18; flashing is never automatically requested.
  */
 final class KeyboardMcuUpdater {
-    private static final String TAG = "PianoPartsMCU";
+    private static final String TAG = "XiaomiKeyboardMCU";
     private static final int RETRIES = 4;
     private static final long ACK_TIMEOUT_MS = 1500;
     private static final long VERIFY_DELAY_MS = 1500;

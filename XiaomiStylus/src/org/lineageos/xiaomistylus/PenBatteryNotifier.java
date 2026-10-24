@@ -33,7 +33,7 @@ import java.util.Locale;
  */
 class PenBatteryNotifier extends BroadcastReceiver {
 
-    private static final String TAG = "PianoPartsPen";
+    private static final String TAG = "XiaomiStylusPen";
 
     // BluetoothDevice.ACTION_BATTERY_LEVEL_CHANGED and EXTRA_BATTERY_LEVEL.
     private static final String ACTION_BATTERY_LEVEL_CHANGED =

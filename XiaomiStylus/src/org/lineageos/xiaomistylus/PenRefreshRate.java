@@ -19,7 +19,7 @@ import android.util.Log;
  */
 final class PenRefreshRate {
 
-    private static final String TAG = "PianoPartsStylus";
+    private static final String TAG = "XiaomiStylus";
 
     private static final String PEN_REFRESH_RATE = "120.0";
     private static final String[] KEYS = {

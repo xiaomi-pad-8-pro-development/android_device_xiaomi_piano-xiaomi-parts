@@ -49,7 +49,7 @@ import java.util.concurrent.TimeUnit;
  */
 public final class PadKeyboardManager implements KeyboardTransport.Listener {
 
-    private static final String TAG = "PianoPartsKeyboard";
+    private static final String TAG = "XiaomiKeyboard";
 
     public static final String PREFS_NAME = "piano_parts";
     public static final String KEY_BACKLIGHT_AUTO = "keyboard_backlight_auto";
@@ -234,7 +234,7 @@ public final class PadKeyboardManager implements KeyboardTransport.Listener {
         mPowerManager = context.getSystemService(PowerManager.class);
         mSensorManager = context.getSystemService(SensorManager.class);
         mScreenOn = mPowerManager.isInteractive();
-        HandlerThread authThread = new HandlerThread("PianoPartsKeyboardAuth");
+        HandlerThread authThread = new HandlerThread("XiaomiKeyboardAuth");
         authThread.start();
         mAuthHandler = new Handler(authThread.getLooper());
         mAuth = new KeyboardAuth(context, new KeyboardAuth.Link() {
@@ -403,7 +403,7 @@ public final class PadKeyboardManager implements KeyboardTransport.Listener {
         String originalVersion = mMcuVersion;
         PowerManager.WakeLock lock = mPowerManager.newWakeLock(
                 PowerManager.SCREEN_DIM_WAKE_LOCK | PowerManager.ON_AFTER_RELEASE,
-                "PianoParts:McuUpdate");
+                "XiaomiKeyboard:McuUpdate");
         lock.acquire(10 * 60 * 1000L);
         mMcuUpdater.start(image,
                 () -> canFlashKeyboardFirmware() && !mUpdater.isRunning()
@@ -439,7 +439,7 @@ public final class PadKeyboardManager implements KeyboardTransport.Listener {
         }
         PowerManager.WakeLock wakeLock = mPowerManager.newWakeLock(
                 PowerManager.SCREEN_DIM_WAKE_LOCK | PowerManager.ON_AFTER_RELEASE,
-                "PianoParts:KeyboardUpdate");
+                "XiaomiKeyboard:KeyboardUpdate");
         wakeLock.acquire(10 * 60 * 1000L);
         // Like stock, only the keyboard update is announced, not the touchpad's.
         if (!touchpad) {
@@ -623,7 +623,7 @@ public final class PadKeyboardManager implements KeyboardTransport.Listener {
             onAttached();
             // Like stock, wake the tablet when the cover is attached.
             mPowerManager.wakeUp(SystemClock.uptimeMillis(), PowerManager.WAKE_REASON_UNKNOWN,
-                    "PianoParts:keyboard_attach");
+                    "XiaomiKeyboard:keyboard_attach");
         } else {
             // An in-flight Binder check cannot be removed from the auth queue.
             // Invalidate its result before a different cover can be attached.

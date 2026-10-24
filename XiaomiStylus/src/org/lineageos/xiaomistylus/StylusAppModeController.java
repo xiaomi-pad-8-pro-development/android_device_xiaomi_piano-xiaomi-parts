@@ -40,7 +40,7 @@ import java.util.Set;
  */
 class StylusAppModeController {
 
-    private static final String TAG = "PianoParts.StylusAppMode";
+    private static final String TAG = "XiaomiStylus.StylusAppMode";
 
     private static final String CONFIG = "/odm/etc/touch/stylus_game_config.json";
     private static final int MODE_STYLUS_GAME = 33;

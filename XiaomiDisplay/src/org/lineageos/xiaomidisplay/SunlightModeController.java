@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package org.lineageos.pianoparts;
+package org.lineageos.xiaomidisplay;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -30,7 +30,7 @@ class SunlightModeController implements SensorEventListener {
     private static final float LUX_OFF = 4500f;
     private static final int LEVEL_OFF = 0;
 
-    private final PianoPartsApp mApp;
+    private final DisplayApplication mApp;
     private final SensorManager mSensorManager;
     private final Sensor mLightSensor;
 
@@ -45,7 +45,7 @@ class SunlightModeController implements SensorEventListener {
         }
     };
 
-    SunlightModeController(PianoPartsApp app) {
+    SunlightModeController(DisplayApplication app) {
         mApp = app;
         mSensorManager = app.getSystemService(SensorManager.class);
         mLightSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
@@ -98,6 +98,6 @@ class SunlightModeController implements SensorEventListener {
             return;
         }
         mLevel = level;
-        mApp.setDisplayFeature(PianoPartsApp.FEATURE_SUNLIGHT_SCREEN, level);
+        mApp.setDisplayFeature(DisplayApplication.FEATURE_SUNLIGHT_SCREEN, level);
     }
 }

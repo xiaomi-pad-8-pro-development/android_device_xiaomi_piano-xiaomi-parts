@@ -15,7 +15,7 @@ import java.util.List;
 
 /** Handles the cover key that has no Android key-layout equivalent. */
 public final class KeyboardKeyService extends AccessibilityService {
-    private static final String TAG = "PianoPartsKeyboard";
+    private static final String TAG = "XiaomiKeyboard";
     private static final int DND_SCAN_CODE = 193; // Linux KEY_F23.
 
     static void setEnabled(Context context, boolean enabled) {

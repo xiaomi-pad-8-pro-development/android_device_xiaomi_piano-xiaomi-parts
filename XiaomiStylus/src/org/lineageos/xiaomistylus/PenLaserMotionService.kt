@@ -13,7 +13,7 @@ import android.os.Messenger
  * Privately bound motion transport for the framework laser bridge.
  *
  * It skips ActivityManager broadcasts for ordinary frames. The service and
- * controller share the PianoParts main looper, so frames reach the renderer
+ * controller share the XiaomiStylus main looper, so frames reach the renderer
  * directly without another queue or an extra 16 ms frame-delay timer.
  */
 class PenLaserMotionService : Service() {

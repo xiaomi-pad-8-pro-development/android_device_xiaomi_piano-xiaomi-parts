@@ -16,7 +16,7 @@ import java.util.function.BooleanSupplier;
  */
 final class KeyboardUpdater {
 
-    private static final String TAG = "PianoPartsKeyboard";
+    private static final String TAG = "XiaomiKeyboard";
 
     private static final long RETRY_DELAY_MS = 1500;
     private static final int RETRIES = 4;

@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package org.lineageos.pianoparts;
+package org.lineageos.xiaomidisplay;
 
 import android.app.WallpaperManager;
 import android.graphics.drawable.Drawable;
@@ -38,12 +38,12 @@ public class ColorSchemeFragment extends SettingsBasePreferenceFragment
     private RadioGroup mTabs;
     private boolean mUpdatingTabs;
 
-    private PianoPartsApp mApp;
+    private DisplayApplication mApp;
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         setPreferencesFromResource(R.xml.color_scheme_settings, rootKey);
-        mApp = (PianoPartsApp) requireActivity().getApplication();
+        mApp = (DisplayApplication) requireActivity().getApplication();
 
         LayoutPreference preview = findPreference(KEY_PREVIEW);
         ImageView image = preview.findViewById(R.id.color_preview_image);
@@ -53,7 +53,7 @@ public class ColorSchemeFragment extends SettingsBasePreferenceFragment
         }
 
         addChoices(KEY_MODES, R.array.color_mode_titles, R.array.color_mode_summaries,
-                PianoPartsApp.COLOR_MODES);
+                DisplayApplication.COLOR_MODES);
         LayoutPreference temperature = findPreference(KEY_TEMPERATURE);
         mPicker = temperature.findViewById(R.id.color_picker);
         mTabs = temperature.findViewById(R.id.color_tabs);

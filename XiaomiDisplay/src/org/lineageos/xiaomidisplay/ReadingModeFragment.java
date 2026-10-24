@@ -2,20 +2,20 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package org.lineageos.pianoparts;
+package org.lineageos.xiaomidisplay;
 
-import static org.lineageos.pianoparts.ReadingModeController.COLOR_TYPE;
-import static org.lineageos.pianoparts.ReadingModeController.LEVEL;
-import static org.lineageos.pianoparts.ReadingModeController.LEVEL_DEFAULT;
-import static org.lineageos.pianoparts.ReadingModeController.LEVEL_MAX;
-import static org.lineageos.pianoparts.ReadingModeController.LEVEL_MIN;
-import static org.lineageos.pianoparts.ReadingModeController.MODE_CLASSIC;
-import static org.lineageos.pianoparts.ReadingModeController.MODE_RHYTHMIC;
-import static org.lineageos.pianoparts.ReadingModeController.MODE_TYPE;
-import static org.lineageos.pianoparts.ReadingModeController.TEXTURE;
-import static org.lineageos.pianoparts.ReadingModeController.TEXTURE_DEFAULT;
-import static org.lineageos.pianoparts.ReadingModeController.TEXTURE_MAX;
-import static org.lineageos.pianoparts.ReadingModeController.TEXTURE_MIN;
+import static org.lineageos.xiaomidisplay.ReadingModeController.COLOR_TYPE;
+import static org.lineageos.xiaomidisplay.ReadingModeController.LEVEL;
+import static org.lineageos.xiaomidisplay.ReadingModeController.LEVEL_DEFAULT;
+import static org.lineageos.xiaomidisplay.ReadingModeController.LEVEL_MAX;
+import static org.lineageos.xiaomidisplay.ReadingModeController.LEVEL_MIN;
+import static org.lineageos.xiaomidisplay.ReadingModeController.MODE_CLASSIC;
+import static org.lineageos.xiaomidisplay.ReadingModeController.MODE_RHYTHMIC;
+import static org.lineageos.xiaomidisplay.ReadingModeController.MODE_TYPE;
+import static org.lineageos.xiaomidisplay.ReadingModeController.TEXTURE;
+import static org.lineageos.xiaomidisplay.ReadingModeController.TEXTURE_DEFAULT;
+import static org.lineageos.xiaomidisplay.ReadingModeController.TEXTURE_MAX;
+import static org.lineageos.xiaomidisplay.ReadingModeController.TEXTURE_MIN;
 
 import android.os.Bundle;
 import android.provider.Settings;
@@ -42,7 +42,7 @@ public class ReadingModeFragment extends SettingsBasePreferenceFragment {
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         setPreferencesFromResource(R.xml.reading_mode_settings, rootKey);
-        mController = ((PianoPartsApp) requireActivity().getApplication())
+        mController = ((DisplayApplication) requireActivity().getApplication())
                 .getReadingModeController();
 
         mSwitch = findPreference("reading_enabled");
