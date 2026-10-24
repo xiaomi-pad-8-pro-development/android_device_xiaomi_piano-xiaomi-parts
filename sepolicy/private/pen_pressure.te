@@ -1,0 +1,2 @@
+# PianoParts reads Focus Pen Pro reports through hidraw.
+allow system_app hidraw_device:chr_file { getattr open read };

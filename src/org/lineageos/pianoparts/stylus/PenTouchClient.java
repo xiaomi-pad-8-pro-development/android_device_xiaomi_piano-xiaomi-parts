@@ -21,7 +21,35 @@ final class PenTouchClient {
         return transact(14, 22, 0, revision);
     }
 
-    private boolean transact(int transaction, int mode, int value, String text) {
+    synchronized boolean setPressureReport(int[] report) {
+        if (report == null || report.length != 15 || report[0] != 5) return false;
+        Parcel data = Parcel.obtain();
+        Parcel reply = Parcel.obtain();
+        try {
+            if (service == null || !service.isBinderAlive()) {
+                service = ServiceManager.checkService(DESCRIPTOR + "/default");
+            }
+            if (service == null) return false;
+            data.writeInterfaceToken(DESCRIPTOR);
+            data.writeInt(0);
+            data.writeInt(1088);
+            data.writeInt(report.length);
+            data.writeIntArray(report);
+            // setModeLongValue is transaction 8 in the stock NDK interface.
+            if (!service.transact(8, data, reply, 0)) return false;
+            reply.readException();
+            return reply.readInt() == 0;
+        } catch (RemoteException | RuntimeException exception) {
+            service = null;
+            Log.w("PianoStylus", "Pressure report transaction failed", exception);
+            return false;
+        } finally {
+            data.recycle();
+            reply.recycle();
+        }
+    }
+
+    private synchronized boolean transact(int transaction, int mode, int value, String text) {
         Parcel data = Parcel.obtain();
         Parcel reply = Parcel.obtain();
         try {

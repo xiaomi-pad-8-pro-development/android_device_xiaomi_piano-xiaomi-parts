@@ -11,3 +11,6 @@ PRODUCT_PACKAGES += PianoPencilEngine
 endif
 PRODUCT_COPY_FILES += \
     device/xiaomi/piano-xiaomi-parts/privapp-permissions-pianoparts.xml:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/permissions/privapp-permissions-pianoparts.xml
+
+# Read-only HID access for the optional pen pressure bridge.
+SYSTEM_EXT_PRIVATE_SEPOLICY_DIRS += device/xiaomi/piano-xiaomi-parts/sepolicy/private
