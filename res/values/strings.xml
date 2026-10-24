@@ -124,16 +124,6 @@
         <item>1</item>
         <item>2</item>
     </string-array>
-    <string name="battery_protection_title">Battery protection</string>
-    <string name="battery_protection_summary">Charge to 80% to slow battery aging</string>
-    <string name="battery_protection_intro">Charging to less than full keeps the battery healthy for longer</string>
-    <string name="battery_protection_mode_title">Protection mode</string>
-    <string name="battery_protection_normal">Normal charging</string>
-    <string name="battery_protection_normal_summary">Always charge to 100%</string>
-    <string name="battery_protection_always">Always protect</string>
-    <string name="battery_protection_always_summary">Stop charging at 80%</string>
-    <string name="battery_protection_smart">Smart protection</string>
-    <string name="battery_protection_smart_summary" formatted="false">Hold at 80%, then charge to 100% before you usually unplug</string>
     <!-- Tap to wake -->
     <!-- Reading mode type -->
     <string name="reading_mode_type_title">Mode</string>

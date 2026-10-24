@@ -67,17 +67,6 @@
             android:summary="@string/bypass_charging_summary"
             android:persistent="false" />
 
-        <Preference
-            android:key="battery_protection"
-            android:icon="@drawable/ic_bypass_tile"
-            app:layout="@layout/features_navigation_card"
-            app:allowDividerAbove="false" app:allowDividerBelow="false"
-            android:title="@string/battery_protection_title"
-            android:summary="@string/battery_protection_summary">
-            <intent
-                android:targetClass="org.lineageos.pianoparts.BatteryProtectionActivity"
-                android:targetPackage="org.lineageos.pianoparts" />
-        </Preference>
     </PreferenceCategory>
 
 </PreferenceScreen>
