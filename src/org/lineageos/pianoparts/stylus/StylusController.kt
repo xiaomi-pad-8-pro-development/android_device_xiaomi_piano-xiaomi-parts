@@ -93,6 +93,7 @@ class StylusController(context: Context, handler: Handler) : AutoCloseable {
         started && screenOn && status.penInitialized
     }
     private val touchClient = PenTouchClient()
+    private val pressureBridge = PenPressureBridge(this.context, this.handler, touchClient)
     private var screenOn = context.getSystemService(PowerManager::class.java).isInteractive
     private val inputManager = context.getSystemService(InputManager::class.java)
     private val penInputs = mutableMapOf<Int, Int>()
@@ -528,6 +529,7 @@ class StylusController(context: Context, handler: Handler) : AutoCloseable {
                     Context.RECEIVER_NOT_EXPORTED,
                 )
                 touchClient.setMode(20, -1)
+                pressureBridge.start()
                 inputManager.registerInputDeviceListener(inputListener, handler)
                 inputManager.inputDeviceIds.forEach(::updatePenInput)
                 PenControls.keys.forEach {
@@ -568,6 +570,7 @@ class StylusController(context: Context, handler: Handler) : AutoCloseable {
             chargingObserver.close()
             context.contentResolver.unregisterContentObserver(controlObserver)
             handler.removeCallbacks(controlsChanged)
+            pressureBridge.close()
             inputManager.unregisterInputDeviceListener(inputListener)
             penInputs.clear()
             touchClient.setMode(20, -1)
