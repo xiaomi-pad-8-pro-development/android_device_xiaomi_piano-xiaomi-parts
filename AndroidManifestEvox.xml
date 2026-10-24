@@ -46,18 +46,6 @@
             android:exported="false"
             android:directBootAware="true" />
 
-        <service
-            android:name=".ThermalProfileTileService"
-            android:icon="@drawable/ic_thermal_tile"
-            android:label="@string/thermal_profile_title"
-            android:exported="true"
-            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
-            <intent-filter>
-                <action android:name="android.service.quicksettings.action.QS_TILE" />
-            </intent-filter>
-            <meta-data android:name="android.service.quicksettings.TILE_CATEGORY"
-                android:value="org.lineageos.qs.CATEGORY_DEVICE" />
-        </service>
 
         <service
             android:name=".SunlightModeTileService"
