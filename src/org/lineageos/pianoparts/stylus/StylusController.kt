@@ -94,6 +94,7 @@ class StylusController(context: Context, handler: Handler) : AutoCloseable {
     }
     private val touchClient = PenTouchClient()
     private val pressureBridge = PenPressureBridge(this.context, this.handler, touchClient)
+    private val refreshRate = PenRefreshRate(this.context)
     private var screenOn = context.getSystemService(PowerManager::class.java).isInteractive
     private val inputManager = context.getSystemService(InputManager::class.java)
     private val penInputs = mutableMapOf<Int, Int>()
@@ -558,6 +559,7 @@ class StylusController(context: Context, handler: Handler) : AutoCloseable {
             if (closed) return@post
             closed = true
             started = false
+            refreshRate.setPinned(false)
             firmwareCheckGeneration++
             firmwareLoader.shutdownNow()
             firmwareAdapter?.cancel()
@@ -716,6 +718,17 @@ class StylusController(context: Context, handler: Handler) : AutoCloseable {
             hallStatus = value
             Settings.System.putInt(context.contentResolver, HALL_STATUS_SETTING, value)
         }
+        updateRefreshRate()
+    }
+
+    /**
+     * Like stock SurfaceFlinger's PenMonitorThread, run the panel at 120 Hz
+     * while a set up pen is off the dock: the touch controller only scans
+     * for the pen at that rate.
+     */
+    private fun updateRefreshRate() {
+        refreshRate.setPinned(started && status.penInitialized && !status.docked &&
+            status.state == StylusConnectionState.CONNECTED)
     }
 
     private fun onAdapterState(state: Int) {
@@ -1233,6 +1246,7 @@ class StylusController(context: Context, handler: Handler) : AutoCloseable {
     }
 
     private fun publish() {
+        updateRefreshRate()
         StylusStatusStore.publish(context, status)
         val address = status.address ?: return
         if (address == persistedAddress) return
