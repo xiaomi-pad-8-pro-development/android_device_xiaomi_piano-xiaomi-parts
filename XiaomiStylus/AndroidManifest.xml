@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="org.lineageos.xiaomistylus"
+    android:sharedUserId="android.uid.system">
+
+    <uses-permission android:name="android.permission.INTERNAL_SYSTEM_WINDOW" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.INTERACT_ACROSS_USERS_FULL" />
+    <uses-permission android:name="android.permission.DEVICE_POWER" />
+    <uses-permission android:name="android.permission.DISABLE_INPUT_DEVICE" />
+    <uses-permission android:name="android.permission.TABLET_MODE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN"
+        android:usesPermissionFlags="neverForLocation" />
+    <uses-permission android:name="android.permission.BLUETOOTH_PRIVILEGED" />
+    <uses-permission android:name="android.permission.LOCAL_MAC_ADDRESS" />
+    <uses-permission android:name="android.permission.OVERRIDE_COMPAT_CHANGE_CONFIG" />
+
+    <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS" />
+    <uses-permission android:name="android.permission.MANAGE_NOTIFICATIONS" />
+    <!-- Permission-gated, read-only shade-state handshake with SystemUI. -->
+    <uses-permission android:name="android.permission.STATUS_BAR" />
+
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent>
+        <intent><action android:name="android.intent.action.CREATE_NOTE" /></intent>
+        <intent><action android:name="android.intent.action.ASSIST" /></intent>
+    </queries>
+
+    <application
+        android:name=".StylusApplication"
+        android:label="@string/stylus_app_name"
+        android:persistent="true"
+        android:directBootAware="true">
+
+        <!-- Same-UID, non-exported low-latency motion transport from system_server. -->
+        <service
+            android:name=".PenLaserMotionService"
+            android:exported="false"
+            android:directBootAware="true" />
+
+        <activity
+            android:name=".StylusSettingsActivity"
+            android:label="@string/pen_category_title"
+            android:icon="@drawable/ic_pen"
+            android:theme="@style/Theme.SubSettingsBase.Expressive"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.android.settings.action.IA_SETTINGS" />
+            </intent-filter>
+            <meta-data android:name="com.android.settings.category"
+                       android:value="com.android.settings.category.ia.connect" />
+            <meta-data android:name="com.android.settings.summary"
+                       android:resource="@string/stylus_settings_summary" />
+            <meta-data android:name="com.android.settings.icon"
+                       android:resource="@drawable/ic_pen" />
+        </activity>
+
+        <activity
+            android:name=".StylusFirmwareActivity"
+            android:label="@string/stylus_firmware_update"
+            android:theme="@style/Theme.SubSettingsBase.Expressive"
+            android:exported="false" />
+    </application>
+</manifest>

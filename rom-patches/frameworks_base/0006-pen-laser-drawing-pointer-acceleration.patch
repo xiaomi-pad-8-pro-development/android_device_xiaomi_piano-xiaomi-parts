@@ -119,8 +119,8 @@
  /** Native input hot path posts bounded/coalesced pen deltas; never calls native recursively. */
  final class PianoPenLaserBridge {
 @@ -26,6 +27,7 @@
-             "org.lineageos.pianoparts",
-             "org.lineageos.pianoparts.stylus.PenLaserMotionService");
+             "org.lineageos.xiaomistylus",
+             "org.lineageos.xiaomistylus.PenLaserMotionService");
      private static final int MSG_MOTION = 1;
 +    private final IntConsumer mSetDrawingDevice;
      private final Context mContext;

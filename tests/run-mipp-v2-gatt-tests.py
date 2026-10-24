@@ -38,7 +38,7 @@ with tempfile.TemporaryDirectory() as tmp:
     for name,body in fixtures.items():
         path=out/name;path.parent.mkdir(parents=True,exist_ok=True);path.write_text(body);paths.append(str(path))
     # Keep actual callback contract, excluding the unrelated V1 factory from this boundary fixture.
-    base=root/'src/org/lineageos/pianoparts/stylus/firmware'
+    base=root/'XiaomiStylus/src/org/lineageos/xiaomistylus/firmware'
     interface=(base/'PenFirmwareGatt.java').read_text()
     start=interface.index('    static PenFirmwareGatt create(')
     end=interface.index('    void prepare(',start)

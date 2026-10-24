@@ -1,4 +1,4 @@
-package org.lineageos.pianoparts.stylus
+package org.lineageos.xiaomistylus
 fun main() {
     val defaults=listOf("assistant","notes","screenshot","settings")
     check(PenPalette.parseSelection("[]")==defaults)

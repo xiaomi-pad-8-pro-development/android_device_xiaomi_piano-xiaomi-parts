@@ -1,10 +1,11 @@
-# PianoParts with the Settings entry placed for the ROM being built.
+# The Xiaomi apps: pen, keyboard cover, bypass charging, and the display
+# features PianoParts still holds.
 PRODUCT_SOONG_NAMESPACES += device/xiaomi/piano-xiaomi-parts
-ifneq ($(wildcard vendor/evolution),)
-PRODUCT_PACKAGES += PianoPartsEvox
-else
-PRODUCT_PACKAGES += PianoParts
-endif
+PRODUCT_PACKAGES += \
+    PianoParts \
+    XiaomiBypass \
+    XiaomiKeyboard \
+    XiaomiStylus
 # The capture bridge handles Android 16 and 17 platform API revisions.
 ifneq ($(filter 36 37,$(PLATFORM_SDK_VERSION)),)
 PRODUCT_PACKAGES += PianoPencilEngine

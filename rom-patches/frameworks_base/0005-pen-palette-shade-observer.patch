@@ -46,8 +46,8 @@
 +    // SystemUI reports shade and Control Center transitions to the pen palette.
 +    // This is a read-only notification channel; no panel state is changed.
 +    private var penShadeOpen = false
-+    private val penShadeQueryAction = "org.lineageos.pianoparts.action.PEN_SHADE_QUERY"
-+    private val penShadeStateAction = "org.lineageos.pianoparts.action.PEN_SHADE_STATE"
++    private val penShadeQueryAction = "org.lineageos.xiaomistylus.action.PEN_SHADE_QUERY"
++    private val penShadeStateAction = "org.lineageos.xiaomistylus.action.PEN_SHADE_STATE"
 +    private val penShadeReceiver = object : BroadcastReceiver() {
 +        override fun onReceive(receiverContext: Context, intent: Intent) {
 +            if (intent.action != penShadeQueryAction) return
@@ -83,7 +83,7 @@
 +
 +    private fun publishPenShadeState(request: Long, open: Boolean) {
 +        context.sendBroadcastAsUser(Intent(penShadeStateAction)
-+                .setPackage("org.lineageos.pianoparts")
++                .setPackage("org.lineageos.xiaomistylus")
 +                .putExtra("request", request)
 +                .putExtra("expanded", open), UserHandle.SYSTEM)
 +    }

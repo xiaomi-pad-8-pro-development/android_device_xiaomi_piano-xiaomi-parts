@@ -9,7 +9,7 @@ Run from the pianopart checkout:
 
 ```sh
 out_dir=$(mktemp -d)
-javac -d "$out_dir" $(find tests/pencilengine-binder -name '*.java') src/org/lineageos/pianoparts/pencilengine/*.java
+javac -d "$out_dir" $(find tests/pencilengine-binder -name '*.java') XiaomiStylus/src/org/lineageos/xiaomistylus/pencilengine/*.java
 java -cp "$out_dir" PencilEngineBinderTest
 ```
 

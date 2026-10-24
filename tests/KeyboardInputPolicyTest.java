@@ -1,5 +1,5 @@
 /* SPDX-License-Identifier: Apache-2.0 */
-package org.lineageos.pianoparts.keyboard;
+package org.lineageos.xiaomikeyboard;
 
 /** Tests actual-state drift/reconfiguration without forcing folded/rejected/detached covers on. */
 public final class KeyboardInputPolicyTest {

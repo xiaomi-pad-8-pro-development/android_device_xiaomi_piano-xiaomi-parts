@@ -1,7 +1,7 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 import java.util.ArrayDeque;
-import org.lineageos.pianoparts.stylus.firmware.MippV2Protocol;
-import org.lineageos.pianoparts.stylus.firmware.MippV2Session;
+import org.lineageos.xiaomistylus.firmware.MippV2Protocol;
+import org.lineageos.xiaomistylus.firmware.MippV2Session;
 
 public final class MippV2SessionTest {
     static int checks;

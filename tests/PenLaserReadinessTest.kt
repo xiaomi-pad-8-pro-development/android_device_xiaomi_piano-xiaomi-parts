@@ -1,4 +1,4 @@
-package org.lineageos.pianoparts.stylus
+package org.lineageos.xiaomistylus
 fun main() {
     check(!PenLaserController.isReadyForBoot(-1, -1))
     check(!PenLaserController.isReadyForBoot(7, -1))

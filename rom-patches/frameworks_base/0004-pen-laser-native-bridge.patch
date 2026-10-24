@@ -126,11 +126,11 @@
 +
 +/** Native input hot path posts bounded/coalesced pen deltas; never calls native recursively. */
 +final class PianoPenLaserBridge {
-+    static final String CONTROL = "org.lineageos.pianoparts.action.LASER_CONTROL";
-+    static final String MOTION = "org.lineageos.pianoparts.action.LASER_MOTION";
++    static final String CONTROL = "org.lineageos.xiaomistylus.action.LASER_CONTROL";
++    static final String MOTION = "org.lineageos.xiaomistylus.action.LASER_MOTION";
 +    private static final ComponentName MOTION_SERVICE = new ComponentName(
-+            "org.lineageos.pianoparts",
-+            "org.lineageos.pianoparts.stylus.PenLaserMotionService");
++            "org.lineageos.xiaomistylus",
++            "org.lineageos.xiaomistylus.PenLaserMotionService");
 +    private static final int MSG_MOTION = 1;
 +    private final Context mContext;
 +    private final Handler mHandler;
@@ -286,7 +286,7 @@
 +            }
 +        }
 +        // Startup, restart or binder failure: keep laser motion functional.
-+        mContext.sendBroadcastAsUser(new Intent(MOTION).setPackage("org.lineageos.pianoparts")
++        mContext.sendBroadcastAsUser(new Intent(MOTION).setPackage("org.lineageos.xiaomistylus")
 +                .putExtra("device", device).putExtra("dx", dx).putExtra("dy", dy), UserHandle.SYSTEM);
 +    }
 +}

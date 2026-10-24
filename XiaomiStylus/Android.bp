@@ -1,0 +1,37 @@
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
+android_app {
+    name: "XiaomiStylus",
+    srcs: [
+        "src/**/*.java",
+        "src/**/*.kt",
+        ":xiaomi-parts-aidl",
+    ],
+    aidl: {
+        include_dirs: ["device/xiaomi/piano-xiaomi-parts/aidl"],
+    },
+    resource_dirs: ["res"],
+    libs: ["framework-bluetooth.stubs.module_lib"],
+    static_libs: [
+        "SettingsLib",
+        "androidx.preference_preference",
+    ],
+    min_sdk_version: "current",
+    certificate: "platform",
+    platform_apis: true,
+    privileged: true,
+    system_ext_specific: true,
+    required: ["privapp-permissions-xiaomistylus.xml"],
+    optimize: {
+        proguard_flags_files: ["proguard.flags"],
+    },
+}
+
+prebuilt_etc {
+    name: "privapp-permissions-xiaomistylus.xml",
+    src: "privapp-permissions-xiaomistylus.xml",
+    sub_dir: "permissions",
+    system_ext_specific: true,
+}

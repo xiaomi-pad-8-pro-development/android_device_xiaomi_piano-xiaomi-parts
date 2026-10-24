@@ -31,9 +31,9 @@ import android.view.WindowManager;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import org.lineageos.pianoparts.pencilengine.PencilEngineBinder;
-import org.lineageos.pianoparts.pencilengine.PencilEngineProtocol;
-import org.lineageos.pianoparts.pencilengine.PencilEngineRegistry;
+import org.lineageos.xiaomistylus.pencilengine.PencilEngineBinder;
+import org.lineageos.xiaomistylus.pencilengine.PencilEngineProtocol;
+import org.lineageos.xiaomistylus.pencilengine.PencilEngineRegistry;
 
 /**
  * Privileged, memory-only screenshot picker. No secure/protected capture, files,

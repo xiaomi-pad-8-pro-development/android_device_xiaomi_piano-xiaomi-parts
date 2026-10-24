@@ -1,7 +1,7 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 import java.util.Arrays;
 import java.nio.charset.StandardCharsets;
-import org.lineageos.pianoparts.stylus.firmware.MippV2Protocol;
+import org.lineageos.xiaomistylus.firmware.MippV2Protocol;
 
 public final class MippV2ProtocolTest {
     private static int checks;

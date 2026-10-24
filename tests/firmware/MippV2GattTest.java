@@ -2,7 +2,7 @@
 import android.bluetooth.*;
 import android.os.Handler;
 import java.security.MessageDigest;
-import org.lineageos.pianoparts.stylus.firmware.*;
+import org.lineageos.xiaomistylus.firmware.*;
 
 public final class MippV2GattTest {
     static int checks;

@@ -9,7 +9,7 @@ trap 'rm -rf "$out"' EXIT
 sources=()
 while IFS= read -r -d '' file; do sources+=("$file"); done < <(
     find "$parts_dir/pencilengine-service/src" \
-         "$parts_dir/src/org/lineageos/pianoparts/pencilengine" -name '*.java' -print0
+         "$parts_dir/XiaomiStylus/src/org/lineageos/xiaomistylus/pencilengine" -name '*.java' -print0
 )
 for release in 16 17; do
     framework=$1

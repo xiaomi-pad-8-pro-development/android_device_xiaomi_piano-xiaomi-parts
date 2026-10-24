@@ -1,5 +1,5 @@
 /* SPDX-License-Identifier: Apache-2.0 */
-package org.lineageos.pianoparts.stylus
+package org.lineageos.xiaomistylus
 
 /** Host-only tests: no Binder, SystemUI process, Bluetooth or hardware. */
 fun main() {

@@ -11,10 +11,10 @@ import android.os.SystemClock;
 import android.os.UserHandle;
 import android.provider.Settings;
 import java.util.UUID;
-import org.lineageos.pianoparts.pencilengine.PencilEngineBinder;
-import org.lineageos.pianoparts.pencilengine.PencilEngineLease;
-import org.lineageos.pianoparts.pencilengine.PencilEngineProtocol;
-import org.lineageos.pianoparts.pencilengine.PencilEngineRegistry;
+import org.lineageos.xiaomistylus.pencilengine.PencilEngineBinder;
+import org.lineageos.xiaomistylus.pencilengine.PencilEngineLease;
+import org.lineageos.xiaomistylus.pencilengine.PencilEngineProtocol;
+import org.lineageos.xiaomistylus.pencilengine.PencilEngineRegistry;
 
 /** Colour UI plus a renewable request consumed by the system pen-key handler. */
 final class PencilEngineEffects implements PencilEngineBinder.Backend, AutoCloseable {

@@ -1,5 +1,5 @@
 /* SPDX-License-Identifier: Apache-2.0 */
-package org.lineageos.pianoparts.keyboard;
+package org.lineageos.xiaomikeyboard;
 
 import java.nio.file.Files;
 import java.nio.file.Path;

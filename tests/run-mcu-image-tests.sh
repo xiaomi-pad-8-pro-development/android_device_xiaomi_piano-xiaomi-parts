@@ -6,7 +6,7 @@ image="${1:-${PIANO_MCU_STOCK_IMAGE:-vendor/xiaomi/piano/proprietary/odm/firmwar
 build_dir=$(mktemp -d)
 trap 'rm -rf "$build_dir"' EXIT
 javac -d "$build_dir" \
-    "$parts_dir/src/org/lineageos/pianoparts/keyboard/KeyboardProtocol.java" \
-    "$parts_dir/src/org/lineageos/pianoparts/keyboard/KeyboardMcuFirmware.java" \
+    "$parts_dir/XiaomiKeyboard/src/org/lineageos/xiaomikeyboard/KeyboardProtocol.java" \
+    "$parts_dir/XiaomiKeyboard/src/org/lineageos/xiaomikeyboard/KeyboardMcuFirmware.java" \
     "$parts_dir/tests/KeyboardMcuFirmwareTest.java"
-java -cp "$build_dir" org.lineageos.pianoparts.keyboard.KeyboardMcuFirmwareTest "$image"
+java -cp "$build_dir" org.lineageos.xiaomikeyboard.KeyboardMcuFirmwareTest "$image"

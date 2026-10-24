@@ -1,4 +1,4 @@
-package org.lineageos.pianoparts.stylus.firmware;
+package org.lineageos.xiaomistylus.firmware;
 import java.nio.file.*;
 import java.security.MessageDigest;
 public final class PenFirmwareRepositoryTest {

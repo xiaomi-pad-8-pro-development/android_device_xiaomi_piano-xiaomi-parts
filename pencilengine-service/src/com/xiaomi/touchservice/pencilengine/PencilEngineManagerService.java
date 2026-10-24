@@ -5,7 +5,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.IBinder;
-import org.lineageos.pianoparts.pencilengine.PencilEngineBinder;
+import org.lineageos.xiaomistylus.pencilengine.PencilEngineBinder;
 
 /** AOSP implementation of the stock endpoint; currently implements color picking only. */
 public final class PencilEngineManagerService extends Service {

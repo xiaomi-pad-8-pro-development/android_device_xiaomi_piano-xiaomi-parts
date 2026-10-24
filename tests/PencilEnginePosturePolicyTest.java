@@ -1,5 +1,5 @@
 /* SPDX-License-Identifier: Apache-2.0 */
-import org.lineageos.pianoparts.PencilEnginePosturePolicy;
+import org.lineageos.xiaomistylus.PencilEnginePosturePolicy;
 public final class PencilEnginePosturePolicyTest {
     private static void expect(int expected, int actual) {
         if (expected != actual) throw new AssertionError(expected + " != " + actual);

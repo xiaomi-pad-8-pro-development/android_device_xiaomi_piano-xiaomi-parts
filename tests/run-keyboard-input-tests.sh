@@ -6,6 +6,6 @@ keyboard_parts_dir="$(dirname -- "$keyboard_tests_dir")"
 keyboard_test_output="$(mktemp -d)"
 trap 'rm -rf -- "$keyboard_test_output"' EXIT
 javac -d "$keyboard_test_output" \
-    "$keyboard_parts_dir/src/org/lineageos/pianoparts/keyboard/KeyboardInputPolicy.java" \
+    "$keyboard_parts_dir/XiaomiKeyboard/src/org/lineageos/xiaomikeyboard/KeyboardInputPolicy.java" \
     "$keyboard_tests_dir/KeyboardInputPolicyTest.java"
-java -cp "$keyboard_test_output" org.lineageos.pianoparts.keyboard.KeyboardInputPolicyTest
+java -cp "$keyboard_test_output" org.lineageos.xiaomikeyboard.KeyboardInputPolicyTest

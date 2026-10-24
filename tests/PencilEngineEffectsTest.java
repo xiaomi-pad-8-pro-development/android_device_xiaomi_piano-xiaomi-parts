@@ -5,8 +5,8 @@ import android.app.ActivityManager;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.provider.Settings;
-import org.lineageos.pianoparts.pencilengine.*;
-import static org.lineageos.pianoparts.pencilengine.PencilEngineRegistry.ActionType.*;
+import org.lineageos.xiaomistylus.pencilengine.*;
+import static org.lineageos.xiaomistylus.pencilengine.PencilEngineRegistry.ActionType.*;
 public final class PencilEngineEffectsTest {
     static int checks;
     static Context context;

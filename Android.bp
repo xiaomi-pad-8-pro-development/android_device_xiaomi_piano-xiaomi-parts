@@ -6,20 +6,24 @@ soong_namespace {}
 
 filegroup {
     name: "piano-pencilengine-transport-sources",
-    srcs: ["src/org/lineageos/pianoparts/pencilengine/*.java"],
+    srcs: ["XiaomiStylus/src/org/lineageos/xiaomistylus/pencilengine/*.java"],
 }
 
-// The same app with the Settings entry placed for LineageOS (PianoParts) or
-// Evolution X (PianoPartsEvox). pianoparts.mk installs the one for the ROM.
-java_defaults {
-    name: "PianoParts_defaults",
+filegroup {
+    name: "xiaomi-parts-aidl",
+    srcs: ["aidl/**/*.aidl"],
+    path: "aidl",
+}
+
+android_app {
+    name: "PianoParts",
     // Shared with Android 16 and 17. SettingsLib requires the current
     // platform API (37 on EvoX A17), so a fixed 36 fails manifest merging.
     min_sdk_version: "current",
     srcs: [
         "src/**/*.java",
         "src/**/*.kt",
-        "aidl/**/*.aidl",
+        ":xiaomi-parts-aidl",
     ],
     aidl: {
         local_include_dirs: ["aidl"],
@@ -35,20 +39,6 @@ java_defaults {
     platform_apis: true,
     privileged: true,
     system_ext_specific: true,
-    optimize: {
-        proguard_flags_files: ["proguard.flags"],
-    },
-}
-
-android_app {
-    name: "PianoParts",
-    defaults: ["PianoParts_defaults"],
     manifest: "AndroidManifest.xml",
 }
 
-android_app {
-    name: "PianoPartsEvox",
-    defaults: ["PianoParts_defaults"],
-    manifest: "AndroidManifestEvox.xml",
-    overrides: ["PianoParts"],
-}

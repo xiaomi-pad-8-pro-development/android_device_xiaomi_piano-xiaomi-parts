@@ -1,7 +1,7 @@
 /* SPDX-License-Identifier: Apache-2.0 */
-package org.lineageos.pianoparts.stylus;
+package org.lineageos.xiaomistylus;
 
-import org.lineageos.pianoparts.pencilengine.PencilEngineLease;
+import org.lineageos.xiaomistylus.pencilengine.PencilEngineLease;
 
 public final class PenToolDispatchPolicyTest {
     private static int checks;

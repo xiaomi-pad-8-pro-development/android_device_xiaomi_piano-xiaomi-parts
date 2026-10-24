@@ -3,8 +3,8 @@
 Run from the device/xiaomi/piano-xiaomi-parts checkout:
 
 ```sh
-rtk proxy javac -d /tmp/piano-suota-tests src/org/lineageos/pianoparts/stylus/firmware/FirmwareImage.java src/org/lineageos/pianoparts/stylus/firmware/MippV2Protocol.java src/org/lineageos/pianoparts/stylus/firmware/SuotaV1.java tests/firmware/SuotaV1Test.java
-rtk proxy java -cp /tmp/piano-suota-tests org.lineageos.pianoparts.stylus.firmware.SuotaV1Test
+rtk proxy javac -d /tmp/piano-suota-tests XiaomiStylus/src/org/lineageos/xiaomistylus/firmware/FirmwareImage.java XiaomiStylus/src/org/lineageos/xiaomistylus/firmware/MippV2Protocol.java XiaomiStylus/src/org/lineageos/xiaomistylus/firmware/SuotaV1.java tests/firmware/SuotaV1Test.java
+rtk proxy java -cp /tmp/piano-suota-tests org.lineageos.xiaomistylus.firmware.SuotaV1Test
 ```
 
 These checks exercise exact model/profile/digest guards, XOR checksum, transfer chunk/block sizing, notification-before-write callback ordering, final revision verification, error/cancel/timeout. They do not flash firmware or validate Android Bluetooth behavior.

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="stylus_app_name">Xiaomi Stylus</string>
+    <string name="stylus_settings_summary">Button actions, connection, battery and firmware</string>
+    <string name="pen_battery_channel">Pen battery</string>
+    <string name="pen_battery_title">Pen</string>
+    <string name="pen_battery_level">Battery <xliff:g id="level" example="80">%1$d</xliff:g>%%</string>
+    <string name="stylus_not_connected">Attach the Focus Pen to the tablet to change these settings</string>
+    <string name="pen_category_title">Focus Pen</string>
+    <string name="stylus_handwriting_title">Write in text fields</string>
+    <string name="stylus_handwriting_summary">Turn handwriting into text in any text field</string>
+    <string name="stylus_buttons_title">Pen buttons</string>
+    <string name="stylus_buttons_summary">Use the pen buttons for shortcuts such as opening the notes app</string>
+    <string name="stylus_device_info_title">Device information</string>
+    <string name="stylus_connection_title">Connection</string>
+    <string name="stylus_battery_title">Battery</string>
+    <string name="stylus_firmware_title">Firmware version</string>
+    <string name="stylus_button_actions_title">Button actions</string>
+    <string name="stylus_primary_button_title">Primary button</string>
+    <string name="stylus_secondary_button_title">Secondary button</string>
+    <string name="stylus_pinch_title">Squeeze</string>
+    <string name="stylus_screen_off_quick_note_title">Quick note with screen off</string>
+    <string name="stylus_screen_off_quick_note_summary">A button set to open notes also works when the screen is off</string>
+    <string name="stylus_connected">Connected</string>
+    <string name="stylus_disconnected">Not connected</string>
+    <string name="stylus_connecting">Connecting</string>
+    <string name="stylus_pairing">Pairing</string>
+    <string name="stylus_bluetooth_off">Bluetooth is off</string>
+    <string name="stylus_connection_failed">Connection failed</string>
+    <string name="stylus_unavailable">Unavailable</string>
+    <string name="stylus_charging_battery">%1$d%%, attached</string>
+    <string name="stylus_battery_percent">%1$d%%</string>
+    <string-array name="stylus_button_actions"><item>None</item><item>Notes</item><item>Screenshot</item><item>Back</item><item>Home</item><item>Recent apps</item><item>Play/pause</item><item>Laser pointer (hold)</item><item>Shortcut menu</item></string-array>
+    <string-array name="stylus_button_values" translatable="false"><item>none</item><item>open_notes</item><item>screenshot</item><item>back</item><item>home</item><item>recents</item><item>media_play_pause</item><item>laser</item><item>menu</item></string-array>
+</resources>

@@ -23,8 +23,6 @@ import android.view.Display;
 import com.android.internal.compat.CompatibilityChangeConfig;
 import com.android.internal.compat.IPlatformCompat;
 
-import org.lineageos.pianoparts.keyboard.PadKeyboardManager;
-import org.lineageos.pianoparts.stylus.StylusController;
 
 import java.util.Set;  import lineageos.providers.LineageSettings;
 
@@ -65,7 +63,6 @@ public class PianoPartsApp extends Application {
     private static final String KEY_SUNLIGHT_MODE = "sunlight_mode";
 
     private DisplayManager mDisplayManager;
-    private TouchpadFlickManager mTouchpadFlickManager;
     private ReadingModeController mReadingModeController;
     private SunlightModeController mSunlightModeController;
     private ITouchFeature mTouchFeature;
@@ -90,7 +87,6 @@ public class PianoPartsApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        BypassChargingTileService.restore(this);
         mDisplayManager = getSystemService(DisplayManager.class);
         mDisplayManager.registerDisplayListener(mDisplayListener,
                 new Handler(Looper.getMainLooper()));
@@ -107,14 +103,7 @@ public class PianoPartsApp extends Application {
             LineageSettings.System.putInt(getContentResolver(),
                     LineageSettings.System.BATTERY_LIGHT_FULL_CHARGE_DISABLED, 0);
         }
-        new PenBatteryNotifier(this);
         new VolumeBoostNotifier(this);
-        mTouchpadFlickManager = new TouchpadFlickManager(this);
-        mTouchpadFlickManager.start();
-        new StylusController(this, new Handler(Looper.getMainLooper())).start();
-        new StylusAppModeController(this, new Handler(Looper.getMainLooper()),
-                this::setTouchMode).start();
-        PadKeyboardManager.get(this).start();
         mReadingModeController = new ReadingModeController(this);
         mSunlightModeController = new SunlightModeController(this);
         mSunlightModeController.setEnabled(isSunlightMode());
@@ -143,20 +132,6 @@ public class PianoPartsApp extends Application {
         return context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
     }
 
-    private boolean setTouchMode(int mode, int value) {
-        ITouchFeature touchFeature = getTouchFeature();
-        if (touchFeature == null) {
-            return false;
-        }
-        try {
-            touchFeature.setTouchMode(TOUCH_ID, mode, value);
-            return true;
-        } catch (RemoteException | RuntimeException e) {
-            Log.e(TAG, "Failed to set touch mode " + mode, e);
-            mTouchFeature = null;
-            return false;
-        }
-    }
 
     boolean isTrueTone() {
         return getPrefs().getBoolean(KEY_TRUE_TONE, false);

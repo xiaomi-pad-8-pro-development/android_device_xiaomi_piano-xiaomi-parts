@@ -1,4 +1,4 @@
-import android.os.*; import android.content.pm.ApplicationInfo; import android.content.pm.PackageManager; import org.lineageos.pianoparts.pencilengine.*;
+import android.os.*; import android.content.pm.ApplicationInfo; import android.content.pm.PackageManager; import org.lineageos.xiaomistylus.pencilengine.*;
 public class PencilEngineBinderTest {
  static int checks; static boolean trusted=true,supported=true,throwSupport=false; static long lease; static int effects; static boolean accept=true;
  static class Token extends Binder { DeathRecipient death; boolean alive=true; public void linkToDeath(DeathRecipient d,int f){death=d;} public boolean unlinkToDeath(DeathRecipient d,int f){return true;} public boolean isBinderAlive(){return alive;} void die(){alive=false; death.binderDied();} }

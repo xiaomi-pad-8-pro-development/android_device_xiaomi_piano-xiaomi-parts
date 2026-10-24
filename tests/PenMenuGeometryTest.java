@@ -1,4 +1,4 @@
-package org.lineageos.pianoparts.stylus;
+package org.lineageos.xiaomistylus;
 public final class PenMenuGeometryTest {
  public static void main(String[] args) {
   for (int n=2;n<=6;n++) {
