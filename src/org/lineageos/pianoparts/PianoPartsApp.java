@@ -100,7 +100,6 @@ public class PianoPartsApp extends Application {
             setDisplayFeature(FEATURE_TRUE_TONE, 1);
         }
         allowCameraLandscape();
-        BatteryProtection.apply(this);
         // Like stock, keep the charging light on when full. Only set once,
         // so the Battery light setting stays the user's choice.
         if (LineageSettings.System.getString(getContentResolver(),
