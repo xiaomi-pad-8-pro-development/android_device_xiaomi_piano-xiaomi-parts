@@ -6,7 +6,6 @@ package org.lineageos.pianoparts;
 
 import android.os.Bundle;
 
-import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.TwoStatePreference;
 
@@ -20,7 +19,6 @@ public class XiaomiSettingsFragment extends SettingsBasePreferenceFragment
     private static final String KEY_SUNLIGHT_MODE = "sunlight_mode";
     private static final String KEY_THERMAL_GAME = "thermal_game";
     private static final String KEY_BYPASS_CHARGING = "bypass_charging";
-    private static final String KEY_TAP_TO_WAKE = "tap_to_wake";
 
     private PianoPartsApp mApp;
 
@@ -29,7 +27,7 @@ public class XiaomiSettingsFragment extends SettingsBasePreferenceFragment
         setPreferencesFromResource(R.xml.xiaomi_settings, rootKey);
         mApp = (PianoPartsApp) requireActivity().getApplication();
         for (String key : new String[] { KEY_READING_MODE, KEY_SUNLIGHT_MODE,
-                KEY_THERMAL_GAME, KEY_BYPASS_CHARGING, KEY_TAP_TO_WAKE }) {
+                KEY_THERMAL_GAME, KEY_BYPASS_CHARGING }) {
             findPreference(key).setOnPreferenceChangeListener(this);
         }
     }
@@ -43,16 +41,10 @@ public class XiaomiSettingsFragment extends SettingsBasePreferenceFragment
         setChecked(KEY_SUNLIGHT_MODE, mApp.isSunlightMode());
         setChecked(KEY_THERMAL_GAME, ThermalProfileTileService.isGameProfile());
         setChecked(KEY_BYPASS_CHARGING, BypassChargingTileService.isEnabled(mApp));
-        ((ListPreference) findPreference(KEY_TAP_TO_WAKE)).setValue(
-                String.valueOf(mApp.getTapToWake()));
     }
 
     @Override
     public boolean onPreferenceChange(Preference preference, Object newValue) {
-        if (KEY_TAP_TO_WAKE.equals(preference.getKey())) {
-            mApp.setTapToWake(Integer.parseInt((String) newValue));
-            return true;
-        }
         boolean enabled = (Boolean) newValue;
         switch (preference.getKey()) {
             case KEY_READING_MODE -> mApp.getReadingModeController().setEnabled(enabled);
