@@ -100,6 +100,7 @@ public class PianoPartsApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        BypassChargingTileService.restore(this);
         mDisplayManager = getSystemService(DisplayManager.class);
         mDisplayManager.registerDisplayListener(mDisplayListener,
                 new Handler(Looper.getMainLooper()));

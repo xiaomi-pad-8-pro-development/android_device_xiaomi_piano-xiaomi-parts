@@ -4,28 +4,33 @@
 
 package org.lineageos.pianoparts;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.service.quicksettings.Tile;
 import android.service.quicksettings.TileService;
 import android.util.Log;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
 /**
  * Bypass charging, the HyperOS "side road charge": while plugged in, power
- * the tablet straight from the charger and let the battery rest. Stock
- * Security Center writes the bypass command (0x400) with 1 or 0 to smart_chg.
+ * the tablet straight from the charger and let the battery rest. The smart_chg
+ * bypass command only lowers the charge current by temperature, so vote the
+ * battery charging off in the MCA charge interface instead. The input stays on
+ * and the kernel holds the vote until it is withdrawn or the tablet reboots,
+ * so the state is saved and restored when PianoParts starts.
  */
 public class BypassChargingTileService extends TileService {
 
     private static final String TAG = "PianoPartsBypass";
 
-    private static final String SMART_CHG_PATH =
-            "/sys/devices/platform/soc/soc:smart_charge/smart_chg";
-    private static final int CMD_BYPASS = 0x400;
-    private static final int STATE_BYPASS = 0x400;
+    private static final String CHARGE_ENABLE_PATH =
+            "/sys/devices/platform/soc/soc:mca_charge_interface/charge_enable";
+    private static final String VOTER = "bypass all ";
+
+    private static final String PREFS_NAME = "bypass";
+    private static final String KEY_ENABLED = "enabled";
 
     @Override
     public void onStartListening() {
@@ -36,7 +41,7 @@ public class BypassChargingTileService extends TileService {
     @Override
     public void onClick() {
         super.onClick();
-        setEnabled(!isEnabled());
+        setEnabled(this, !isEnabled(this));
         updateTile();
     }
 
@@ -45,28 +50,39 @@ public class BypassChargingTileService extends TileService {
         if (tile == null) {
             return;
         }
-        tile.setState(isEnabled() ? Tile.STATE_ACTIVE : Tile.STATE_INACTIVE);
+        tile.setState(isEnabled(this) ? Tile.STATE_ACTIVE : Tile.STATE_INACTIVE);
         tile.updateTile();
     }
 
-    static void setEnabled(boolean enabled) {
-        write(CMD_BYPASS | (enabled ? 1 : 0));
+    static boolean isEnabled(Context context) {
+        return getPrefs(context).getBoolean(KEY_ENABLED, false);
     }
 
-    static boolean isEnabled() {
-        try (BufferedReader reader = new BufferedReader(new FileReader(SMART_CHG_PATH))) {
-            return (Integer.parseInt(reader.readLine().trim()) & STATE_BYPASS) != 0;
-        } catch (IOException | NullPointerException | NumberFormatException e) {
-            Log.e(TAG, "Failed to read smart_chg", e);
+    static void setEnabled(Context context, boolean enabled) {
+        if (write(enabled)) {
+            getPrefs(context).edit().putBoolean(KEY_ENABLED, enabled).apply();
+        }
+    }
+
+    /** The kernel drops the vote on reboot, so vote again at startup. */
+    static void restore(Context context) {
+        if (isEnabled(context)) {
+            write(true);
+        }
+    }
+
+    private static boolean write(boolean enabled) {
+        try (FileWriter writer = new FileWriter(CHARGE_ENABLE_PATH)) {
+            writer.write(VOTER + (enabled ? "0" : "1"));
+            return true;
+        } catch (IOException e) {
+            Log.e(TAG, "Failed to write charge_enable", e);
             return false;
         }
     }
 
-    private static void write(int value) {
-        try (FileWriter writer = new FileWriter(SMART_CHG_PATH)) {
-            writer.write(Integer.toString(value));
-        } catch (IOException e) {
-            Log.e(TAG, "Failed to write smart_chg", e);
-        }
+    private static SharedPreferences getPrefs(Context context) {
+        return context.createDeviceProtectedStorageContext()
+                .getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
     }
 }

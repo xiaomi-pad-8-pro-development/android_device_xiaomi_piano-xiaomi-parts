@@ -42,7 +42,7 @@ public class XiaomiSettingsFragment extends SettingsBasePreferenceFragment
                 mApp.getReadingModeController().isEnabled());
         setChecked(KEY_SUNLIGHT_MODE, mApp.isSunlightMode());
         setChecked(KEY_THERMAL_GAME, ThermalProfileTileService.isGameProfile());
-        setChecked(KEY_BYPASS_CHARGING, BypassChargingTileService.isEnabled());
+        setChecked(KEY_BYPASS_CHARGING, BypassChargingTileService.isEnabled(mApp));
         ((ListPreference) findPreference(KEY_TAP_TO_WAKE)).setValue(
                 String.valueOf(mApp.getTapToWake()));
     }
@@ -58,7 +58,7 @@ public class XiaomiSettingsFragment extends SettingsBasePreferenceFragment
             case KEY_READING_MODE -> mApp.getReadingModeController().setEnabled(enabled);
             case KEY_SUNLIGHT_MODE -> mApp.setSunlightMode(enabled);
             case KEY_THERMAL_GAME -> ThermalProfileTileService.setGameProfile(enabled);
-            case KEY_BYPASS_CHARGING -> BypassChargingTileService.setEnabled(enabled);
+            case KEY_BYPASS_CHARGING -> BypassChargingTileService.setEnabled(mApp, enabled);
         }
         return true;
     }
