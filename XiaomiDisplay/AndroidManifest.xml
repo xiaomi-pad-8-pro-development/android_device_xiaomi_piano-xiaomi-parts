@@ -22,8 +22,6 @@
             <intent-filter>
                 <action android:name="android.service.quicksettings.action.QS_TILE" />
             </intent-filter>
-            <meta-data android:name="android.service.quicksettings.TILE_CATEGORY"
-                android:value="org.lineageos.qs.CATEGORY_DEVICE" />
         </service>
 
         <service
@@ -35,8 +33,6 @@
             <intent-filter>
                 <action android:name="android.service.quicksettings.action.QS_TILE" />
             </intent-filter>
-            <meta-data android:name="android.service.quicksettings.TILE_CATEGORY"
-                android:value="org.lineageos.qs.CATEGORY_DEVICE" />
         </service>
 
         <!-- Takes LiveDisplay's place in Settings > Display, as on HyperOS. -->
