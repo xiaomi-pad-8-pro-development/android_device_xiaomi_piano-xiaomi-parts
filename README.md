@@ -15,7 +15,7 @@ below; the device tree builds without this repository.
 
 The ROM changes the features need (stylus laser pointer and palette, keyboard
 cover layout, touchpad scrolling, the Settings and LineageParts entries these
-apps replace, the Quick Settings category) are in `rom-patches/`.
+apps replace, physical keyboard entries) are in `rom-patches/`.
 `vendorsetup.sh` applies them when `build/envsetup.sh` is sourced, so a build
 without this repository keeps the stock ROM behaviour.
 
