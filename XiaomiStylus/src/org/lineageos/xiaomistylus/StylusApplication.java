@@ -18,5 +18,6 @@ public class StylusApplication extends Application {
         new PenBatteryNotifier(this);
         new StylusController(this, handler).start();
         new StylusAppModeController(this, handler, touchFeature::setTouchMode).start();
+        new StylusConnectionMode(this, handler, touchFeature::setTouchMode).start();
     }
 }
