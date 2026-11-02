@@ -61,6 +61,20 @@ class KeyHandler(private val context: Context) : DeviceKeyHandler {
         } catch (exception: RuntimeException) {
             Log.w(TAG, "Optional pen laser key observer unavailable", exception)
         }
+        // Stock opens a quick note when the pen touches the dark screen. The
+        // pen input of the panel wakes the tablet (its idc sets device.wake),
+        // so open the note when the screen comes on from that motion.
+        try {
+            context.registerReceiver(object : BroadcastReceiver() {
+                override fun onReceive(context: Context, intent: Intent) {
+                    if (isScreenOffQuickNoteEnabled() && wokenByPen()) {
+                        executeAction(StylusSettingsContract.Action.OPEN_NOTES, "off_screen")
+                    }
+                }
+            }, IntentFilter(Intent.ACTION_SCREEN_ON), null, handler)
+        } catch (exception: RuntimeException) {
+            Log.w(TAG, "Screen-off quick note unavailable", exception)
+        }
         // Publish only from the loaded system-server handler, never from the APK
         // process. APK-only updates cannot advertise an absent dispatch backend.
         try {
@@ -141,21 +155,11 @@ class KeyHandler(private val context: Context) : DeviceKeyHandler {
 
     private fun handleEventOnMain(event: EventIdentity, setting: ButtonSetting, stylusType: Int) {
         if (!rememberEvent(event)) return
+        // Like stock, the pen buttons do nothing with the screen off; a pen
+        // touch on the dark screen opens the quick note instead.
         if (!powerManager.isInteractive) {
             cancelPending(event.keyCode)
             stylusTouchMonitor.cancel(event.keyCode)
-            if (event.action == KeyEvent.ACTION_DOWN && event.repeatCount == 0 &&
-                readAction(setting) == StylusSettingsContract.Action.OPEN_NOTES &&
-                isScreenOffQuickNoteEnabled()
-            ) {
-                // Stock HyperOS opens a quick note from the pen with the screen off.
-                powerManager.wakeUp(
-                    event.eventTime,
-                    PowerManager.WAKE_REASON_WAKE_KEY,
-                    "$TAG:quick_note",
-                )
-                executeAction(StylusSettingsContract.Action.OPEN_NOTES, "off_screen")
-            }
             return
         }
 
@@ -282,6 +286,23 @@ class KeyHandler(private val context: Context) : DeviceKeyHandler {
             if (StylusSettingsContract.DEFAULT_SCREEN_OFF_QUICK_NOTE) 1 else 0,
             UserHandle.USER_CURRENT,
         ) != 0
+
+    // Only the pen inputs of the panel wake by motion, so a fresh motion
+    // wakeup means the pen touched the dark screen. PowerManagerInternal is
+    // local to system_server, where this handler runs.
+    private fun wokenByPen(): Boolean = try {
+        val internal = Class.forName("android.os.PowerManagerInternal")
+        val power = Class.forName("com.android.server.LocalServices")
+            .getMethod("getService", Class::class.java).invoke(null, internal)
+        val wake = internal.getMethod("getLastWakeup").invoke(power)
+        val reason = wake.javaClass.getField("wakeReason").getInt(wake)
+        val time = wake.javaClass.getField("wakeTime").getLong(wake)
+        reason == PowerManager.WAKE_REASON_WAKE_MOTION &&
+            SystemClock.uptimeMillis() - time < PEN_WAKE_WINDOW_MS
+    } catch (exception: ReflectiveOperationException) {
+        Log.w(TAG, "Cannot read the last wakeup", exception)
+        false
+    }
 
     private fun cancelPending(keyCode: Int) {
         val runnable = pendingActions[keyCode] ?: return
@@ -437,6 +458,7 @@ class KeyHandler(private val context: Context) : DeviceKeyHandler {
         private const val TAG = "XiaomiStylus.KeyHandler"
         private const val PARTS_PACKAGE = "org.lineageos.xiaomistylus"
         private const val LONG_PRESS_TIMEOUT_MS = 380L
+        private const val PEN_WAKE_WINDOW_MS = 2_000L
         private const val RECENT_EVENT_LIMIT = 512
     }
 }
