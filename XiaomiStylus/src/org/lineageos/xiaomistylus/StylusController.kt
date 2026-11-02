@@ -89,8 +89,10 @@ class StylusController(context: Context, handler: Handler) : AutoCloseable {
             }
         } }
     }
+    // Stock opens the squeeze menu for any connected Xiaomi pen, before its
+    // MIPP setup has finished.
     private val shortcutMenu = PenShortcutMenu(this.context, this.handler) {
-        started && screenOn && status.penInitialized
+        started && screenOn
     }
     private val touchClient = PenTouchClient()
     private val pressureBridge = PenPressureBridge(this.context, this.handler, touchClient)
@@ -1018,9 +1020,21 @@ class StylusController(context: Context, handler: Handler) : AutoCloseable {
         val write = pendingWrites.removeFirst()
         activeWrite = write
         armGattTimeout()
-        if (client.writeCharacteristic(command, write.bytes, command.writeType) !=
-            BluetoothStatusCodes.SUCCESS
-        ) closeGatt()
+        sendWrite(client, command, write, 0)
+    }
+
+    // Like stock, retry a write the Bluetooth stack is still busy with instead
+    // of dropping the pen session.
+    private fun sendWrite(client: BluetoothGatt, command: BluetoothGattCharacteristic,
+                          write: PenWrite, attempt: Int) {
+        if (gatt !== client || activeWrite !== write) return
+        val result = client.writeCharacteristic(command, write.bytes, command.writeType)
+        if (result == BluetoothStatusCodes.SUCCESS) return
+        if (attempt < WRITE_RETRIES) {
+            handler.postDelayed({ sendWrite(client, command, write, attempt + 1) }, WRITE_RETRY_DELAY_MS)
+            return
+        }
+        closeGatt("MIPP write failed: $result")
     }
 
     private fun finishWrite() {
@@ -1277,6 +1291,8 @@ class StylusController(context: Context, handler: Handler) : AutoCloseable {
         const val ACTION_CHECK_FIRMWARE = "org.lineageos.xiaomistylus.CHECK_FIRMWARE"
         const val ACTION_UPDATE_FIRMWARE = StylusSettingsContract.ACTION_UPDATE_FIRMWARE
         private const val TAG = "PianoStylus"
+        private const val WRITE_RETRIES = 10
+        private const val WRITE_RETRY_DELAY_MS = 100L
         private const val PAIRING_CHARGE_STATE = 4
         private const val PEN_ADDRESS_SETTING = "miui_bluetooth_store_pen_address"
         private const val PEN_DFU_ADDRESS_SETTING = "miui_bluetooth_store_pen_dfu_address"
