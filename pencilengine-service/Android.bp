@@ -8,4 +8,12 @@ android_app {
     privileged: true,
     system_ext_specific: true,
     optimize: { enabled: false },
+    required: ["privapp-permissions-com.xiaomi.touchservice.xml"],
+}
+
+prebuilt_etc {
+    name: "privapp-permissions-com.xiaomi.touchservice.xml",
+    src: "privapp-permissions-com.xiaomi.touchservice.xml",
+    sub_dir: "permissions",
+    system_ext_specific: true,
 }
