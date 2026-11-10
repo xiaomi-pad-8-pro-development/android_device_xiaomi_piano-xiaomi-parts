@@ -8,7 +8,7 @@
         android:key="keyboard_illustration"
         android:title="@string/keyboard_cover_title"
         android:summary="@string/keyboard_attach_guide"
-        android:icon="@drawable/accessory_keyboard_settings_image_normal_pad"
+        android:icon="@drawable/accessory_keyboard_show_icon"
         app:layout="@layout/accessory_hero_preference"
         android:selectable="false"
         app:iconSpaceReserved="false" />

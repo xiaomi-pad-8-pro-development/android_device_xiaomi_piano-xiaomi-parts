@@ -21,7 +21,6 @@ public class KeyboardSettingsFragment extends SettingsBasePreferenceFragment
 
     private PadKeyboardManager mKeyboard;
     private Preference mNotConnected;
-    private Preference mIllustration;
     private SwitchPreferenceCompat mAuto;
     private SeekBarPreference mBrightness;
     private SwitchPreferenceCompat mTouchpad;
@@ -44,7 +43,6 @@ public class KeyboardSettingsFragment extends SettingsBasePreferenceFragment
         setPreferencesFromResource(R.xml.keyboard_settings, rootKey);
         mKeyboard = PadKeyboardManager.get(requireContext());
         mNotConnected = findPreference("keyboard_not_connected");
-        mIllustration = findPreference("keyboard_illustration");
         mAuto = findPreference(PadKeyboardManager.KEY_BACKLIGHT_AUTO);
         mBrightness = findPreference(PadKeyboardManager.KEY_BACKLIGHT_LEVEL);
         mTouchpad = findPreference(PadKeyboardManager.KEY_TOUCHPAD);
@@ -131,9 +129,6 @@ public class KeyboardSettingsFragment extends SettingsBasePreferenceFragment
         boolean connected = mKeyboard.isConnected();
         boolean updating = mKeyboard.isUpdating();
         mNotConnected.setVisible(!connected);
-        mIllustration.setIcon(mKeyboard.hasTouchpad()
-                ? R.drawable.accessory_keyboard_settings_image_high_pad
-                : R.drawable.accessory_keyboard_settings_image_normal_pad);
         boolean backlight = mKeyboard.hasBacklight();
         mAuto.setVisible(!connected || backlight);
         mBrightness.setVisible(!connected || backlight);
