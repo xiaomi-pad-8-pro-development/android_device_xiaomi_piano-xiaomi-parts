@@ -17,16 +17,23 @@ import android.os.SystemProperties;
 import android.util.Log;
 
 import java.util.List;
+import java.util.Set;
 
 /**
- * Like HyperOS, switch piano-thermald to the game thermal profile while a game
- * is in front. A game is an app that declares the game category.
+ * Like HyperOS, pick the piano-thermald profile from the app in front: the
+ * game profile for apps that declare the game category, the camera profile
+ * for camera apps, the normal one otherwise.
  */
-class GameThermalProfile {
+class ThermalProfileSwitcher {
 
-    private static final String TAG = "XiaomiStylus.GameThermal";
+    private static final String TAG = "XiaomiStylus.ThermalProfile";
     private static final String PROP = "sys.piano.thermald.profile";
     private static final String GAME = "tgame";
+    private static final String CAMERA = "camera";
+    private static final Set<String> CAMERA_APPS = Set.of(
+            "com.android.camera",
+            "org.lineageos.aperture",
+            "com.google.android.GoogleCamera");
 
     private final Context mContext;
     private final Handler mHandler;
@@ -42,7 +49,7 @@ class GameThermalProfile {
         }
     };
 
-    GameThermalProfile(Context context, Handler handler) {
+    ThermalProfileSwitcher(Context context, Handler handler) {
         mContext = context.getApplicationContext();
         mHandler = handler;
     }
@@ -67,7 +74,7 @@ class GameThermalProfile {
         } catch (RuntimeException e) {
             Log.w(TAG, "Cannot read the app in front", e);
         }
-        set(isGame(top) ? GAME : "");
+        set(isGame(top) ? GAME : CAMERA_APPS.contains(top) ? CAMERA : "");
     }
 
     private boolean isGame(String packageName) {
