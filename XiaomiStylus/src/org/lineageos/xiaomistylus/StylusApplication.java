@@ -19,5 +19,6 @@ public class StylusApplication extends Application {
         new StylusController(this, handler).start();
         new StylusAppModeController(this, handler, touchFeature::setTouchMode).start();
         new StylusConnectionMode(this, handler, touchFeature::setTouchMode).start();
+        new GameThermalProfile(this, handler).start();
     }
 }
