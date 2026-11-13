@@ -1,0 +1,11 @@
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
+// Turns Android desktop windowing off when enabled from the keyboard
+// cover settings. Mutable and disabled by default, so desktop windowing
+// stays on until the user switches it off.
+runtime_resource_overlay {
+    name: "PianoDesktopModeOffOverlay",
+    product_specific: true,
+}

@@ -51,6 +51,13 @@
         <intent android:action="android.settings.HARD_KEYBOARD_SETTINGS" />
     </Preference>
 
+    <SwitchPreferenceCompat
+        android:key="desktop_windowing"
+        android:title="@string/desktop_windowing_title"
+        android:summary="@string/desktop_windowing_summary"
+        android:persistent="false"
+        app:iconSpaceReserved="false" />
+
     <PreferenceCategory
         android:key="keyboard_about"
         android:title="@string/keyboard_about_title"

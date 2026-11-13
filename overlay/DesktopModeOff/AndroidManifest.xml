@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="org.lineageos.overlay.piano.desktopmodeoff">
+    <application android:hasCode="false" />
+    <!-- Not static: OverlayManager turns it on and off. Unconfigured
+         mutable overlays rank above the static vendor overlay. -->
+    <overlay android:targetPackage="android" />
+</manifest>

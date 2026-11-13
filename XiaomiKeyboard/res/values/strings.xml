@@ -42,4 +42,10 @@
     <string name="keyboard_cover_title">Keyboard cover settings</string>
     <string name="keyboard_layout_title">Shortcuts, layout and pointer</string>
     <string name="keyboard_layout_summary">Keyboard shortcuts, layouts, pointer speed and scrolling</string>
+    <string name="desktop_windowing_title">Desktop windowing</string>
+    <string name="desktop_windowing_summary">Open apps in resizable windows. Turn off if apps glitch with the keyboard cover. Takes effect after a reboot.</string>
+    <string name="desktop_windowing_reboot_message">Reboot now to apply the desktop windowing change?</string>
+    <string name="desktop_windowing_reboot">Reboot</string>
+    <string name="desktop_windowing_later">Later</string>
+    <string name="desktop_windowing_failed">Couldn\'t change desktop windowing</string>
 </resources>

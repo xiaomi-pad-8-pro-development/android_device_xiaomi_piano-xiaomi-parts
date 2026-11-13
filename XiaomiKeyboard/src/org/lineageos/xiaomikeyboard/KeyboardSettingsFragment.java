@@ -6,6 +6,8 @@ package org.lineageos.xiaomikeyboard;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
+import android.os.PowerManager;
+import android.widget.Toast;
 
 import androidx.preference.Preference;
 
@@ -25,6 +27,7 @@ public class KeyboardSettingsFragment extends SettingsBasePreferenceFragment
     private SeekBarPreference mBrightness;
     private SwitchPreferenceCompat mTouchpad;
     private Preference mShortcuts;
+    private SwitchPreferenceCompat mDesktop;
     private PreferenceCategory mAbout;
     private Preference mModel;
     private Preference mKeyboardVersion;
@@ -47,6 +50,9 @@ public class KeyboardSettingsFragment extends SettingsBasePreferenceFragment
         mBrightness = findPreference(PadKeyboardManager.KEY_BACKLIGHT_LEVEL);
         mTouchpad = findPreference(PadKeyboardManager.KEY_TOUCHPAD);
         mShortcuts = findPreference("keyboard_shortcuts");
+        mDesktop = findPreference("desktop_windowing");
+        mDesktop.setVisible(DesktopWindowing.isAvailable(requireContext()));
+        mDesktop.setOnPreferenceChangeListener((p, value) -> setDesktopWindowing((Boolean) value));
         mAbout = findPreference("keyboard_about");
         mModel = findPreference("keyboard_model");
         mKeyboardVersion = findPreference("keyboard_version");
@@ -83,6 +89,22 @@ public class KeyboardSettingsFragment extends SettingsBasePreferenceFragment
             mKeyboard.applySettings();
             updateState();
         });
+        return true;
+    }
+
+    private boolean setDesktopWindowing(boolean enabled) {
+        if (!DesktopWindowing.setEnabled(requireContext(), enabled)) {
+            Toast.makeText(requireContext(), R.string.desktop_windowing_failed,
+                    Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        new AlertDialog.Builder(requireContext())
+                .setTitle(R.string.desktop_windowing_title)
+                .setMessage(R.string.desktop_windowing_reboot_message)
+                .setPositiveButton(R.string.desktop_windowing_reboot, (dialog, which) ->
+                        requireContext().getSystemService(PowerManager.class).reboot(null))
+                .setNegativeButton(R.string.desktop_windowing_later, null)
+                .show();
         return true;
     }
 
@@ -138,6 +160,7 @@ public class KeyboardSettingsFragment extends SettingsBasePreferenceFragment
         mTouchpad.setEnabled(connected && !updating);
         // Android's physical keyboard page closes at once without a keyboard.
         mShortcuts.setEnabled(connected);
+        mDesktop.setChecked(DesktopWindowing.isEnabled(requireContext()));
 
         mAbout.setVisible(connected);
         mModel.setSummary(valueOrUnknown(mKeyboard.getPid()));

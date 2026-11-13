@@ -4,6 +4,7 @@ PRODUCT_PACKAGES += \
     XiaomiBypass \
     XiaomiDisplay \
     XiaomiKeyboard \
+    PianoDesktopModeOffOverlay \
     XiaomiStylus
 # The capture bridge handles Android 16 and 17 platform API revisions.
 ifneq ($(filter 36 37,$(PLATFORM_SDK_VERSION)),)
