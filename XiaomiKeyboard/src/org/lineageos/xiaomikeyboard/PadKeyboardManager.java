@@ -7,6 +7,7 @@ package org.lineageos.xiaomikeyboard;
 import android.animation.ValueAnimator;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.DialogInterface;
@@ -250,9 +251,40 @@ public final class PadKeyboardManager implements KeyboardTransport.Listener {
         });
     }
 
+    /**
+     * The Do Not Disturb key used to be caught by an accessibility service that
+     * filtered every key event; the KeyHandler in system_server handles it
+     * now. Drop the old service from the settings of an upgraded install.
+     */
+    private void removeOldKeyService() {
+        ComponentName old = new ComponentName(mContext.getPackageName(),
+                "org.lineageos.xiaomikeyboard.KeyboardKeyService");
+        String current = Settings.Secure.getString(mContext.getContentResolver(),
+                Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES);
+        if (current == null || current.isEmpty()) return;
+        StringBuilder kept = new StringBuilder();
+        boolean found = false;
+        for (String entry : current.split(":")) {
+            if (entry.isEmpty()) continue;
+            if (old.equals(ComponentName.unflattenFromString(entry))) {
+                found = true;
+                continue;
+            }
+            if (kept.length() > 0) kept.append(':');
+            kept.append(entry);
+        }
+        if (!found) return;
+        Settings.Secure.putString(mContext.getContentResolver(),
+                Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES, kept.toString());
+        if (kept.length() == 0) {
+            Settings.Secure.putInt(mContext.getContentResolver(),
+                    Settings.Secure.ACCESSIBILITY_ENABLED, 0);
+        }
+    }
+
     /** Starts talking to the keyboard; called once from the application. */
     public void start() {
-        KeyboardKeyService.setEnabled(mContext, false);
+        removeOldKeyService();
         mAuth.bind();
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_SCREEN_ON);
@@ -618,7 +650,6 @@ public final class PadKeyboardManager implements KeyboardTransport.Listener {
         Log.i(TAG, "Keyboard cover " + (connected ? "attached" : "detached"));
         mConnected = connected;
         mHallFoldConfirmed = false;
-        KeyboardKeyService.setEnabled(mContext, connected);
         if (connected) {
             onAttached();
             // Like stock, wake the tablet when the cover is attached.

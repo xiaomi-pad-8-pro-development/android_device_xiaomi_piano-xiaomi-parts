@@ -1,0 +1,2 @@
+# system_server loads the keyboard KeyHandler by name.
+-keep class org.lineageos.xiaomikeyboard.KeyHandler { *; }
