@@ -23,7 +23,7 @@
     <string name="stylus_secondary_button_title">Secondary button</string>
     <string name="stylus_pinch_title">Squeeze</string>
     <string name="stylus_screen_off_quick_note_title">Quick note with screen off</string>
-    <string name="stylus_screen_off_quick_note_summary">A button set to open notes also works when the screen is off</string>
+    <string name="stylus_screen_off_quick_note_summary">Touch the dark screen with the pen to start a note</string>
     <string name="stylus_connected">Connected</string>
     <string name="stylus_disconnected">Not connected</string>
     <string name="stylus_connecting">Connecting</string>
@@ -35,4 +35,32 @@
     <string name="stylus_battery_percent">%1$d%%</string>
     <string-array name="stylus_button_actions"><item>None</item><item>Notes</item><item>Screenshot</item><item>Back</item><item>Home</item><item>Recent apps</item><item>Play/pause</item><item>Laser pointer (hold)</item><item>Shortcut menu</item><item>Assistant</item></string-array>
     <string-array name="stylus_button_values" translatable="false"><item>none</item><item>open_notes</item><item>screenshot</item><item>back</item><item>home</item><item>recents</item><item>media_play_pause</item><item>laser</item><item>menu</item><item>assistant</item></string-array>
+    <!-- Settings page -->
+    <string name="stylus_header_disconnected_guide">Not connected. Attach the pen to the magnetic edge to pair and charge it.</string>
+    <string name="stylus_category_buttons">Buttons</string>
+    <string name="stylus_category_gestures">Gestures</string>
+    <string name="stylus_category_writing">Writing</string>
+    <string name="stylus_category_notifications">Notifications</string>
+    <string name="stylus_category_about">About</string>
+    <string name="stylus_primary_button_summary_fmt">Hold the button: <xliff:g id="action" example="Notes">%1$s</xliff:g></string>
+    <string name="stylus_palette_summary_short">Pick the apps and actions in the shortcut menu</string>
+    <string name="stylus_gestures_not_ready">Attach the pen and wait until it is connected to change its gestures.</string>
+    <string name="stylus_gestures_initializing">The pen is still being set up. Gesture settings unlock once it is ready.</string>
+    <string name="stylus_double_tap_summary">Tap the side of the pen twice</string>
+    <string name="stylus_squeeze_summary">Squeeze the pen near the tip</string>
+    <string name="stylus_slide_summary">Slide a finger up or down the side of the pen</string>
+    <string name="stylus_squeeze_pressure_summary">How hard to squeeze before it counts</string>
+    <string name="stylus_squeeze_feedback_summary">Vibration in the pen when you squeeze</string>
+    <string name="stylus_hover_summary">Let the pen act when its tip hovers just above the screen</string>
+    <string name="stylus_writing_tool_summary">Which pen feel the drawing vibration imitates</string>
+    <string name="stylus_writing_feedback_summary">Vibration in the pen while you draw</string>
+    <string name="stylus_refresh_title">Smooth pen input</string>
+    <string name="stylus_refresh_summary">The screen runs at 120 Hz while the pen is off its magnetic edge, so the pen is tracked at full speed</string>
+    <string name="stylus_battery_notification_title">Battery notification</string>
+    <string name="stylus_battery_notification_summary">Show the pen battery level in the notification shade. The attach and low-battery pop-ups always show.</string>
+    <string name="stylus_model_title">Model</string>
+    <string name="stylus_firmware_summary_fmt"><xliff:g id="version" example="1.0.44">%1$s</xliff:g>. Tap to check for updates.</string>
+    <string name="stylus_pen_buttons_summary">Let apps use the pen buttons, for example to erase while a button is held</string>
+    <string name="stylus_battery_notification_off">Off. Tap to turn on the pen battery notification.</string>
+    <string name="stylus_described_value"><xliff:g id="value" example="Medium">%2$s</xliff:g>. <xliff:g id="description" example="How hard to squeeze before it counts">%1$s</xliff:g></string>
 </resources>

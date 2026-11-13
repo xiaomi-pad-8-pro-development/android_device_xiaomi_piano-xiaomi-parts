@@ -5,38 +5,43 @@
 
 package org.lineageos.xiaomistylus
 
-import android.content.SharedPreferences
-import android.content.Intent
 import android.app.AlertDialog
-import android.widget.Toast
+import android.app.NotificationManager
 import android.bluetooth.BluetoothManager
+import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.provider.Settings
+import android.widget.Toast
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceCategory
 import androidx.preference.SwitchPreferenceCompat
 import com.android.settingslib.widget.SettingsBasePreferenceFragment
-import org.lineageos.xiaomistylus.R
-import org.lineageos.xiaomistylus.AccessoryConnectionPreference
 
 /**
+ * The pen page, laid out like HyperOS: a header card with the pen, then
+ * Buttons, Gestures, Writing, Notifications and About.
+ *
  * Connection, battery and firmware come from [StylusStatusStore]; the button
- * actions keep the stock secure settings consumed by KeyHandler.
+ * and gesture actions keep the secure settings consumed by KeyHandler, and
+ * the touch-film controls keep the stock system settings in [PenControls].
  */
 class StylusSettingsFragment : SettingsBasePreferenceFragment() {
 
-    private lateinit var hero: Preference
-    private lateinit var connection: AccessoryConnectionPreference
-    private lateinit var battery: Preference
-    private lateinit var notConnected: Preference
+    private lateinit var header: AccessoryConnectionPreference
     private lateinit var placementWarning: Preference
-    private lateinit var buttonsCategory: PreferenceCategory
-    private lateinit var deviceInfoCategory: PreferenceCategory
+
+    private lateinit var gesturesCategory: PreferenceCategory
+    private lateinit var gesturesNote: Preference
+    private val gestureControls = mutableListOf<Preference>()
+    private val proOnly = mutableListOf<Preference>()
+
+    private lateinit var batteryNotification: Preference
+
+    private lateinit var aboutCategory: PreferenceCategory
+    private lateinit var model: Preference
     private lateinit var firmware: Preference
-    private lateinit var firmwareCheck: Preference
-    private lateinit var firmwareUpdate: Preference
-    private lateinit var penControls: PreferenceCategory
 
     private val statusListener = SharedPreferences.OnSharedPreferenceChangeListener { _, _ ->
         refreshStatus()
@@ -44,195 +49,144 @@ class StylusSettingsFragment : SettingsBasePreferenceFragment() {
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         val context = requireContext()
-        val resources = context.resources
         preferenceScreen = preferenceManager.createPreferenceScreen(context)
 
-        hero = Preference(context).apply {
-            layoutResource = R.layout.accessory_pen_hero_preference
+        // Header card.
+        header = AccessoryConnectionPreference(context).apply {
+            key = KEY_CONNECTION
             order = 0
             setIcon(R.drawable.accessory_stylus_show_icon)
             setTitle(R.string.pen_category_title)
-            setSummary(R.string.stylus_attach_guide)
-            isSelectable = false
-            isIconSpaceReserved = false
         }
-        preferenceScreen.addPreference(hero)
-        preferenceScreen.addPreference(Preference(context).apply {
-            order = 30
-            setTitle(R.string.stylus_palette_title)
-            setSummary(R.string.stylus_palette_summary)
-            setOnPreferenceClickListener { showPaletteEditor(); true }
-        })
-        notConnected = Preference(context).apply {
-            order = 10
-            summary = getString(R.string.stylus_not_connected)
-            isSelectable = false
-            isIconSpaceReserved = false
-        }
-        preferenceScreen.addPreference(notConnected)
+        preferenceScreen.addPreference(header)
         placementWarning = Preference(context).apply {
-            order = 11
+            order = 1
+            setIcon(R.drawable.ic_info)
             setTitle(R.string.stylus_attachment_warning_title)
             isSelectable = false
-            isIconSpaceReserved = false
         }
         preferenceScreen.addPreference(placementWarning)
 
-        buttonsCategory = PreferenceCategory(context).apply {
-            order = 40
-            title = getString(R.string.stylus_button_actions_title)
-        }
-        preferenceScreen.addPreference(buttonsCategory)
-
-        penControls = PreferenceCategory(context).apply {
-            order = 50
-            title = getString(R.string.stylus_pen_controls)
-        }
-        preferenceScreen.addPreference(penControls)
-        penControls.addPreference(createSystemSwitch(PenControls.DOUBLE_TAP,
-            R.string.stylus_double_tap_enabled, 1))
-        penControls.addPreference(createSystemSwitch(PenControls.PINCH,
-            R.string.stylus_squeeze_enabled, 5))
-        penControls.addPreference(createSystemSwitch(PenControls.SLIDE,
-            R.string.stylus_slide_enabled, 1))
-        penControls.addPreference(createSystemSwitch(PenControls.HOVER,
-            R.string.stylus_hover_enabled, 1))
-        penControls.addPreference(createSystemChoice(PenControls.PRESSURE,
-            R.string.stylus_squeeze_pressure, R.array.stylus_pressure_levels, 0..4, 2))
-        penControls.addPreference(createSystemChoice(PenControls.PINCH_FEEDBACK,
-            R.string.stylus_squeeze_feedback, R.array.stylus_feedback_levels, 0..5, 3))
-        penControls.addPreference(createSystemChoice(PenControls.WRITING_TYPE,
-            R.string.stylus_writing_tool, R.array.stylus_writing_tools, 1..4, 1))
-        penControls.addPreference(createSystemChoice(PenControls.WRITING_FEEDBACK,
-            R.string.stylus_writing_feedback, R.array.stylus_feedback_levels, 0..5, 0))
-        listOf(
-            StylusSettingsContract.DOUBLE_TAP_ACTION to R.string.stylus_double_tap_action,
-            StylusSettingsContract.SLIDE_UP_ACTION to R.string.stylus_slide_up_action,
-            StylusSettingsContract.SLIDE_DOWN_ACTION to R.string.stylus_slide_down_action,
-        ).forEach { (key, title) ->
-            penControls.addPreference(createActionPreference(key, getString(title),
-                resources.getTextArray(R.array.stylus_button_actions),
-                resources.getTextArray(R.array.stylus_button_values), StylusSettingsContract.Action.NONE))
-        }
-
-        buttonsCategory.addPreference(
-            createSecureSwitch(
-                Settings.Secure.STYLUS_HANDWRITING_ENABLED,
-                getString(R.string.stylus_handwriting_title),
-                getString(R.string.stylus_handwriting_summary),
-            ),
-        )
-        buttonsCategory.addPreference(
-            createSecureSwitch(
-                Settings.Secure.STYLUS_BUTTONS_ENABLED,
-                getString(R.string.stylus_buttons_title),
-                getString(R.string.stylus_buttons_summary),
-            ),
-        )
-
-        buttonsCategory.addPreference(
-            createActionPreference(
-                StylusSettingsContract.PRIMARY_BUTTON_ACTION,
-                getString(R.string.stylus_primary_button_title),
-                resources.getTextArray(R.array.stylus_button_actions),
-                resources.getTextArray(R.array.stylus_button_values),
-                StylusSettingsContract.DEFAULT_PRIMARY_BUTTON_ACTION,
-            ),
-        )
-        buttonsCategory.addPreference(
-            createActionPreference(
-                StylusSettingsContract.SECONDARY_BUTTON_ACTION,
-                getString(R.string.stylus_secondary_button_title),
-                resources.getTextArray(R.array.stylus_button_actions),
-                resources.getTextArray(R.array.stylus_button_values),
-                StylusSettingsContract.DEFAULT_SECONDARY_BUTTON_ACTION,
-            ),
-        )
-
-        buttonsCategory.addPreference(
-            createActionPreference(
-                StylusSettingsContract.PINCH_ACTION,
-                getString(R.string.stylus_pinch_title),
-                resources.getTextArray(R.array.stylus_button_actions),
-                resources.getTextArray(R.array.stylus_button_values),
-                defaultPinchAction(),
-            ),
-        )
-        buttonsCategory.addPreference(
-            SwitchPreferenceCompat(context).apply {
-                key = StylusSettingsContract.SCREEN_OFF_QUICK_NOTE
-                title = getString(R.string.stylus_screen_off_quick_note_title)
-                summary = getString(R.string.stylus_screen_off_quick_note_summary)
-                isPersistent = false
-                isChecked = Settings.Secure.getInt(
-                    context.contentResolver,
+        // Buttons.
+        val buttons = category(10, R.string.stylus_category_buttons)
+        buttons.addPreference(createActionPreference(
+            StylusSettingsContract.PRIMARY_BUTTON_ACTION,
+            R.string.stylus_primary_button_title, R.drawable.ic_button,
+            StylusSettingsContract.DEFAULT_PRIMARY_BUTTON_ACTION, holdSummary = true))
+        buttons.addPreference(createActionPreference(
+            StylusSettingsContract.SECONDARY_BUTTON_ACTION,
+            R.string.stylus_secondary_button_title, R.drawable.ic_button,
+            StylusSettingsContract.DEFAULT_SECONDARY_BUTTON_ACTION, holdSummary = true))
+        buttons.addPreference(Preference(context).apply {
+            setIcon(R.drawable.ic_apps)
+            setTitle(R.string.stylus_palette_title)
+            setSummary(R.string.stylus_palette_summary_short)
+            setOnPreferenceClickListener { showPaletteEditor(); true }
+        })
+        buttons.addPreference(SwitchPreferenceCompat(context).apply {
+            key = StylusSettingsContract.SCREEN_OFF_QUICK_NOTE
+            setIcon(R.drawable.ic_pen)
+            setTitle(R.string.stylus_screen_off_quick_note_title)
+            setSummary(R.string.stylus_screen_off_quick_note_summary)
+            isPersistent = false
+            isChecked = Settings.Secure.getInt(context.contentResolver,
+                StylusSettingsContract.SCREEN_OFF_QUICK_NOTE,
+                if (StylusSettingsContract.DEFAULT_SCREEN_OFF_QUICK_NOTE) 1 else 0) != 0
+            setOnPreferenceChangeListener { _, newValue ->
+                Settings.Secure.putInt(context.contentResolver,
                     StylusSettingsContract.SCREEN_OFF_QUICK_NOTE,
-                    if (StylusSettingsContract.DEFAULT_SCREEN_OFF_QUICK_NOTE) 1 else 0,
-                ) != 0
-                setOnPreferenceChangeListener { _, newValue ->
-                    Settings.Secure.putInt(
-                        context.contentResolver,
-                        StylusSettingsContract.SCREEN_OFF_QUICK_NOTE,
-                        if (newValue as Boolean) 1 else 0,
-                    )
-                }
-            },
-        )
+                    if (newValue as Boolean) 1 else 0)
+            }
+        })
+        buttons.addPreference(createSecureSwitch(Settings.Secure.STYLUS_BUTTONS_ENABLED,
+            R.string.stylus_buttons_title, R.string.stylus_pen_buttons_summary, R.drawable.ic_touch_app))
 
-        deviceInfoCategory = PreferenceCategory(context).apply {
-            order = 20
-            title = getString(R.string.stylus_device_info_title)
-        }
-        preferenceScreen.addPreference(deviceInfoCategory)
-
-        connection = AccessoryConnectionPreference(context).apply {
-            key = KEY_CONNECTION
-            title = getString(R.string.stylus_connection_title)
+        // Gestures. Squeeze exists on every pen KeyHandler knows; the
+        // touch-film gestures and their tuning only on the Focus Pen Pro.
+        gesturesCategory = category(20, R.string.stylus_category_gestures)
+        gesturesNote = Preference(context).apply {
+            setIcon(R.drawable.ic_info)
             isSelectable = false
         }
-        deviceInfoCategory.addPreference(connection)
+        gesturesCategory.addPreference(gesturesNote)
+        addGesture(createSystemSwitch(PenControls.DOUBLE_TAP, R.string.stylus_double_tap_enabled,
+            R.string.stylus_double_tap_summary, R.drawable.ic_touch_app, 1), control = true, pro = true)
+        addGesture(createActionPreference(StylusSettingsContract.DOUBLE_TAP_ACTION,
+            R.string.stylus_double_tap_action, 0, StylusSettingsContract.Action.NONE).also {
+            it.dependency = PenControls.DOUBLE_TAP }, control = false, pro = true)
+        addGesture(createSystemSwitch(PenControls.PINCH, R.string.stylus_squeeze_enabled,
+            R.string.stylus_squeeze_summary, R.drawable.ic_pen, 5), control = true, pro = true)
+        addGesture(createActionPreference(StylusSettingsContract.PINCH_ACTION,
+            R.string.stylus_pinch_title, 0, defaultPinchAction()), control = false, pro = false)
+        addGesture(createSystemChoice(PenControls.PRESSURE, R.string.stylus_squeeze_pressure,
+            R.string.stylus_squeeze_pressure_summary, R.array.stylus_pressure_levels, 0..4, 2,
+            R.drawable.ic_touch_app),
+            control = true, pro = true)
+        addGesture(createSystemChoice(PenControls.PINCH_FEEDBACK, R.string.stylus_squeeze_feedback,
+            R.string.stylus_squeeze_feedback_summary, R.array.stylus_feedback_levels, 0..5, 3),
+            control = true, pro = true)
+        addGesture(createSystemSwitch(PenControls.SLIDE, R.string.stylus_slide_enabled,
+            R.string.stylus_slide_summary, R.drawable.ic_swap_vert, 1), control = true, pro = true)
+        addGesture(createActionPreference(StylusSettingsContract.SLIDE_UP_ACTION,
+            R.string.stylus_slide_up_action, 0, StylusSettingsContract.Action.NONE).also {
+            it.dependency = PenControls.SLIDE }, control = false, pro = true)
+        addGesture(createActionPreference(StylusSettingsContract.SLIDE_DOWN_ACTION,
+            R.string.stylus_slide_down_action, 0, StylusSettingsContract.Action.NONE).also {
+            it.dependency = PenControls.SLIDE }, control = false, pro = true)
 
-        battery = Preference(context).apply {
-            key = KEY_BATTERY
-            title = getString(R.string.stylus_battery_title)
+        // Writing. This ROM has no palm rejection or pen refresh rate
+        // setting, so neither is offered; the refresh rate row only explains
+        // what PenRefreshRate does on its own.
+        val writing = category(30, R.string.stylus_category_writing)
+        writing.addPreference(createSecureSwitch(Settings.Secure.STYLUS_HANDWRITING_ENABLED,
+            R.string.stylus_handwriting_title, R.string.stylus_handwriting_summary, R.drawable.ic_pen))
+        createSystemSwitch(PenControls.HOVER, R.string.stylus_hover_enabled,
+            R.string.stylus_hover_summary, R.drawable.ic_touch_app, 1).also {
+            writing.addPreference(it); gestureControls.add(it); proOnly.add(it)
+        }
+        createSystemChoice(PenControls.WRITING_TYPE, R.string.stylus_writing_tool,
+            R.string.stylus_writing_tool_summary, R.array.stylus_writing_tools, 1..4, 1,
+            R.drawable.ic_pen).also {
+            writing.addPreference(it); gestureControls.add(it); proOnly.add(it)
+        }
+        createSystemChoice(PenControls.WRITING_FEEDBACK, R.string.stylus_writing_feedback,
+            R.string.stylus_writing_feedback_summary, R.array.stylus_feedback_levels, 0..5, 0).also {
+            writing.addPreference(it); gestureControls.add(it); proOnly.add(it)
+        }
+        writing.addPreference(Preference(context).apply {
+            setIcon(R.drawable.ic_speed)
+            setTitle(R.string.stylus_refresh_title)
+            setSummary(R.string.stylus_refresh_summary)
+            isSelectable = false
+        })
+
+        // Notifications.
+        val notifications = category(40, R.string.stylus_category_notifications)
+        batteryNotification = Preference(context).apply {
+            setIcon(R.drawable.ic_notifications)
+            setTitle(R.string.stylus_battery_notification_title)
+            intent = Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS)
+                .putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
+                .putExtra(Settings.EXTRA_CHANNEL_ID, BATTERY_CHANNEL)
+        }
+        notifications.addPreference(batteryNotification)
+
+        // About.
+        aboutCategory = category(50, R.string.stylus_category_about)
+        model = Preference(context).apply {
+            setIcon(R.drawable.ic_info)
+            setTitle(R.string.stylus_model_title)
             isSelectable = false
         }
-        deviceInfoCategory.addPreference(battery)
-        battery.isVisible = false
-
+        aboutCategory.addPreference(model)
         firmware = Preference(context).apply {
             key = KEY_FIRMWARE
-            title = getString(R.string.stylus_firmware_title)
-            intent = Intent().setClassName(context.packageName, "${context.packageName}.StylusFirmwareActivity")
+            setIcon(R.drawable.ic_system_update)
+            setTitle(R.string.stylus_firmware_title)
+            intent = Intent().setClassName(context.packageName,
+                "${context.packageName}.StylusFirmwareActivity")
         }
-        deviceInfoCategory.addPreference(firmware)
-        firmwareCheck = Preference(context).apply {
-            setTitle(R.string.stylus_firmware_check)
-            setOnPreferenceClickListener {
-                context.sendBroadcast(Intent(StylusController.ACTION_CHECK_FIRMWARE).setPackage(context.packageName))
-                true
-            }
-        }
-        deviceInfoCategory.addPreference(firmwareCheck)
-        firmwareUpdate = Preference(context).apply {
-            setTitle(R.string.stylus_firmware_update)
-            setOnPreferenceClickListener {
-                val state = StylusStatusStore.snapshot(context)
-                if (state.updateState == "available") {
-                    AlertDialog.Builder(context).setTitle(R.string.stylus_firmware_update)
-                        .setMessage(getString(R.string.stylus_firmware_confirm, state.updateVersion))
-                        .setNegativeButton(android.R.string.cancel, null)
-                        .setPositiveButton(R.string.stylus_firmware_update) { _, _ ->
-                            context.sendBroadcast(Intent(StylusController.ACTION_UPDATE_FIRMWARE).setPackage(context.packageName))
-                        }.show()
-                }
-                true
-            }
-        }
-        deviceInfoCategory.addPreference(firmwareUpdate)
-        // The stock-style detail page owns check/update actions.
-        firmwareCheck.isVisible = false
-        firmwareUpdate.isVisible = false
+        aboutCategory.addPreference(firmware)
     }
 
     override fun onResume() {
@@ -246,18 +200,11 @@ class StylusSettingsFragment : SettingsBasePreferenceFragment() {
             StylusSettingsContract.SLIDE_DOWN_ACTION).forEach {
             refreshActionPreference(it, StylusSettingsContract.Action.NONE)
         }
-        refreshActionPreference(
-            StylusSettingsContract.PINCH_ACTION,
-            defaultPinchAction(),
-        )
-        refreshActionPreference(
-            StylusSettingsContract.PRIMARY_BUTTON_ACTION,
-            StylusSettingsContract.DEFAULT_PRIMARY_BUTTON_ACTION,
-        )
-        refreshActionPreference(
-            StylusSettingsContract.SECONDARY_BUTTON_ACTION,
-            StylusSettingsContract.DEFAULT_SECONDARY_BUTTON_ACTION,
-        )
+        refreshActionPreference(StylusSettingsContract.PRIMARY_BUTTON_ACTION,
+            StylusSettingsContract.DEFAULT_PRIMARY_BUTTON_ACTION)
+        refreshActionPreference(StylusSettingsContract.SECONDARY_BUTTON_ACTION,
+            StylusSettingsContract.DEFAULT_SECONDARY_BUTTON_ACTION)
+        refreshBatteryNotification()
     }
 
     override fun onPause() {
@@ -266,54 +213,62 @@ class StylusSettingsFragment : SettingsBasePreferenceFragment() {
         super.onPause()
     }
 
-    private fun createSecureSwitch(
-        key: String,
-        title: String,
-        summary: String,
-    ): SwitchPreferenceCompat = SwitchPreferenceCompat(requireContext()).apply {
-        this.key = key
-        this.title = title
-        this.summary = summary
-        isPersistent = false
-        isChecked = Settings.Secure.getInt(requireContext().contentResolver, key, 1) != 0
-        setOnPreferenceChangeListener { _, newValue ->
-            Settings.Secure.putInt(
-                requireContext().contentResolver,
-                key,
-                if (newValue as Boolean) 1 else 0,
-            )
+    private fun category(order: Int, title: Int): PreferenceCategory =
+        PreferenceCategory(requireContext()).also {
+            it.order = order
+            it.setTitle(title)
+            preferenceScreen.addPreference(it)
         }
+
+    private fun addGesture(preference: Preference, control: Boolean, pro: Boolean) {
+        gesturesCategory.addPreference(preference)
+        if (control) gestureControls.add(preference)
+        if (pro) proOnly.add(preference)
     }
 
-    private fun createSystemSwitch(key: String, title: Int, enabledValue: Int): SwitchPreferenceCompat =
+    private fun createSecureSwitch(key: String, title: Int, summary: Int, icon: Int) =
         SwitchPreferenceCompat(requireContext()).apply {
             this.key = key
             setTitle(title)
+            setSummary(summary)
+            setIcon(icon)
             isPersistent = false
-            isChecked = PenControls.value(requireContext(), key, enabledValue) != 0
-            setOnPreferenceChangeListener { _, value ->
-                Settings.System.putInt(requireContext().contentResolver, key,
-                    if (value as Boolean) enabledValue else 0)
+            isChecked = Settings.Secure.getInt(requireContext().contentResolver, key, 1) != 0
+            setOnPreferenceChangeListener { _, newValue ->
+                Settings.Secure.putInt(requireContext().contentResolver, key,
+                    if (newValue as Boolean) 1 else 0)
             }
         }
 
+    private fun createSystemSwitch(key: String, title: Int, summary: Int, icon: Int,
+            enabledValue: Int) = SwitchPreferenceCompat(requireContext()).apply {
+        this.key = key
+        setTitle(title)
+        setSummary(summary)
+        setIcon(icon)
+        isPersistent = false
+        isChecked = PenControls.value(requireContext(), key, enabledValue) != 0
+        setOnPreferenceChangeListener { _, value ->
+            Settings.System.putInt(requireContext().contentResolver, key,
+                if (value as Boolean) enabledValue else 0)
+        }
+    }
+
+    /** A level picker whose summary is "<description> · <current level>". */
     private fun createSystemChoice(
-        key: String, title: Int, entries: Int, range: IntRange, defaultValue: Int,
+        key: String, title: Int, description: Int, entries: Int, range: IntRange, defaultValue: Int,
+        icon: Int = R.drawable.ic_vibration,
     ): ListPreference = ListPreference(requireContext()).apply {
         this.key = key
         setTitle(title)
+        dialogTitle = getString(title)
         setEntries(entries)
+        setIcon(icon)
         entryValues = range.map(Int::toString).toTypedArray()
         isPersistent = false
         value = PenControls.value(requireContext(), key, defaultValue)
             .coerceIn(range.first, range.last).toString()
-        updateSummary(this, value)
-        if (key == StylusSettingsContract.PRIMARY_BUTTON_ACTION || key == StylusSettingsContract.SECONDARY_BUTTON_ACTION) {
-            layoutResource = R.layout.accessory_action_preference
-            setIcon(if (key == StylusSettingsContract.PRIMARY_BUTTON_ACTION)
-                R.drawable.accessory_stylus_shortcut_actions_icon else R.drawable.accessory_stylus_screen_shot)
-            isIconSpaceReserved = false
-        }
+        setDescribedSummary(this, description)
         setOnPreferenceChangeListener { preference, newValue ->
             val number = (newValue as? String)?.toIntOrNull()
             if (number == null || number !in range ||
@@ -323,53 +278,75 @@ class StylusSettingsFragment : SettingsBasePreferenceFragment() {
             if (key == PenControls.WRITING_FEEDBACK &&
                 Settings.System.getString(requireContext().contentResolver, PenControls.WRITING_TYPE) == null
             ) Settings.System.putInt(requireContext().contentResolver, PenControls.WRITING_TYPE, 1)
-            updateSummary(preference as ListPreference, number.toString())
-            true
+            (preference as ListPreference).value = number.toString()
+            setDescribedSummary(preference, description)
+            false // Already stored and shown.
         }
     }
 
+    private fun setDescribedSummary(preference: ListPreference, description: Int) {
+        val index = preference.findIndexOfValue(preference.value)
+        val level = if (index >= 0) preference.entries[index] else null
+        preference.summary = if (level == null) getString(description)
+            else getString(R.string.stylus_described_value, getString(description), level)
+    }
+
     private fun createActionPreference(
-        key: String,
-        title: String,
-        entries: Array<CharSequence>,
-        entryValues: Array<CharSequence>,
-        defaultValue: String,
+        key: String, title: Int, icon: Int, defaultValue: String, holdSummary: Boolean = false,
     ): ListPreference = ListPreference(requireContext()).apply {
         this.key = key
-        this.title = title
-        dialogTitle = title
-        this.entries = entries
-        this.entryValues = entryValues
+        setTitle(title)
+        dialogTitle = getString(title)
+        if (icon != 0) setIcon(icon)
+        val current = StylusSettingsContract.sanitizeAction(getSecure(key), defaultValue)
+        // The laser pointer needs the laser overlay; hide it where it would do nothing.
+        val laser = PenLaserController.isAvailable(requireContext()) ||
+            current == StylusSettingsContract.Action.LASER
+        val names = resources.getTextArray(R.array.stylus_button_actions)
+        val values = resources.getTextArray(R.array.stylus_button_values)
+        val shown = values.indices.filter { laser || values[it] != StylusSettingsContract.Action.LASER }
+        entries = shown.map { names[it] }.toTypedArray()
+        entryValues = shown.map { values[it] }.toTypedArray()
         isPersistent = false
-        value = StylusSettingsContract.sanitizeAction(getSecure(key), defaultValue)
-        updateSummary(this, value)
+        if (holdSummary) extras.putBoolean(EXTRA_HOLD_SUMMARY, true)
+        value = current
+        updateActionSummary(this)
         setOnPreferenceChangeListener { preference, newValue ->
             val action = newValue as? String
                 ?: return@setOnPreferenceChangeListener false
-            if (action !in StylusSettingsContract.Action.SUPPORTED) {
+            if (action !in StylusSettingsContract.Action.SUPPORTED || !putSecure(key, action)) {
                 return@setOnPreferenceChangeListener false
             }
-            if (!putSecure(key, action)) {
-                return@setOnPreferenceChangeListener false
-            }
-            updateSummary(preference as ListPreference, action)
-            true
+            (preference as ListPreference).value = action
+            updateActionSummary(preference)
+            false // Already stored and shown.
         }
     }
 
     private fun refreshActionPreference(key: String, defaultValue: String) {
         val preference = findPreference<ListPreference>(key) ?: return
-        val action = StylusSettingsContract.sanitizeAction(
-            getSecure(key),
-            defaultValue,
-        )
-        preference.value = action
-        updateSummary(preference, action)
+        preference.value = StylusSettingsContract.sanitizeAction(getSecure(key), defaultValue)
+        updateActionSummary(preference)
     }
 
-    private fun updateSummary(preference: ListPreference, action: String) {
-        val index = preference.findIndexOfValue(action)
-        preference.summary = if (index >= 0) preference.entries[index] else null
+    private fun updateActionSummary(preference: ListPreference) {
+        val index = preference.findIndexOfValue(preference.value)
+        val action = if (index >= 0) preference.entries[index] else null
+        preference.summary = when {
+            action == null -> null
+            preference.extras.getBoolean(EXTRA_HOLD_SUMMARY) ->
+                getString(R.string.stylus_primary_button_summary_fmt, action)
+            else -> action
+        }
+    }
+
+    private fun refreshBatteryNotification() {
+        val channel = requireContext().getSystemService(NotificationManager::class.java)
+            ?.getNotificationChannel(BATTERY_CHANNEL)
+        batteryNotification.summary = getString(
+            if (channel != null && channel.importance == NotificationManager.IMPORTANCE_NONE)
+                R.string.stylus_battery_notification_off
+            else R.string.stylus_battery_notification_summary)
     }
 
     private fun refreshStatus() {
@@ -386,65 +363,74 @@ class StylusSettingsFragment : SettingsBasePreferenceFragment() {
             else -> status.state
         }
         val connected = connectionState == StylusConnectionState.CONNECTED
+        val touchFilm = PenControls.isTouchFilm(status)
+
         // The page used to say "Focus Pen" for every pen, the Pro included.
-        val model = getString(XiaomiStylusDevice.modelName(status.vendorId, status.productId)
-            ?: R.string.pen_category_title)
-        hero.title = model
-        activity?.title = model
-        placementWarning.isVisible = status.placementError != 0
-        placementWarning.summary = getString(R.string.stylus_attachment_warning,
-            status.placementError)
-        deviceInfoCategory.isVisible = connected
-        notConnected.isVisible = !connected
-        buttonsCategory.isEnabled = connected
-        penControls.isVisible = PenControls.isTouchFilm(status)
-        penControls.isEnabled = status.penInitialized
-        connection.summary = getString(
-            when (connectionState) {
-                StylusConnectionState.CONNECTED -> R.string.stylus_connected
-                StylusConnectionState.CONNECTING -> R.string.stylus_connecting
-                StylusConnectionState.PAIRING -> R.string.stylus_pairing
-                StylusConnectionState.BLUETOOTH_OFF -> R.string.stylus_bluetooth_off
-                StylusConnectionState.CONNECTION_FAILED -> R.string.stylus_connection_failed
-                StylusConnectionState.DISCONNECTED -> R.string.stylus_disconnected
-            },
-        )
-        battery.summary = when {
-            status.battery == null -> getString(R.string.stylus_unavailable)
-            status.docked -> getString(R.string.stylus_charging_battery, status.battery)
-            else -> getString(R.string.stylus_battery_percent, status.battery)
-        }
-        connection.setBattery(status.battery, battery.summary, connected && !status.penInitialized)
-        firmware.summary = status.firmwareRevision ?: getString(R.string.stylus_unavailable)
-        val busy = status.updateState in setOf("updating", "verifying")
-        firmwareCheck.isEnabled = connected && !busy
-        firmwareUpdate.isEnabled = connected && status.penInitialized &&
-            status.updateState == "available" && (status.battery ?: -1) >= 20
-        firmwareUpdate.summary = when (status.updateState) {
-            "available" -> getString(R.string.stylus_firmware_available, status.updateVersion)
-            "updating" -> getString(R.string.stylus_firmware_progress, status.updateProgress)
-            "verifying" -> getString(R.string.stylus_firmware_verifying)
-            "complete" -> getString(R.string.stylus_firmware_complete)
-            "unsupported" -> getString(R.string.stylus_firmware_unsupported)
-            "invalid", "failed" -> getString(R.string.stylus_firmware_failed)
-            "not_ready" -> getString(R.string.stylus_firmware_not_ready)
-            else -> getString(R.string.stylus_firmware_unavailable)
-        }
-        if (connected && !status.penInitialized && PenControls.isTouchFilm(status)) {
-            connection.summary = getString(R.string.stylus_initializing)
+        val modelRes = XiaomiStylusDevice.modelName(status.vendorId, status.productId)
+        val modelName = getString(modelRes ?: R.string.pen_category_title)
+        header.title = modelName
+        activity?.title = modelName
+
+        var summary = getString(when (connectionState) {
+            StylusConnectionState.CONNECTED -> R.string.stylus_connected
+            StylusConnectionState.CONNECTING -> R.string.stylus_connecting
+            StylusConnectionState.PAIRING -> R.string.stylus_pairing
+            StylusConnectionState.BLUETOOTH_OFF -> R.string.stylus_bluetooth_off
+            StylusConnectionState.CONNECTION_FAILED -> R.string.stylus_connection_failed
+            StylusConnectionState.DISCONNECTED -> R.string.stylus_header_disconnected_guide
+        })
+        if (connected && !status.penInitialized && touchFilm) {
+            summary = getString(R.string.stylus_initializing)
         }
         if (status.penError != 0) {
-            connection.summary = getString(when (status.penError) {
+            summary = getString(when (status.penError) {
                 1 -> R.string.stylus_battery_error
                 2 -> R.string.stylus_temperature_error
                 3 -> R.string.stylus_current_error
                 else -> R.string.stylus_setting_rejected
             })
         }
+        header.summary = summary
+        val batteryLabel = when {
+            status.battery == null -> null
+            status.docked -> getString(R.string.stylus_charging_battery, status.battery)
+            else -> getString(R.string.stylus_battery_percent, status.battery)
+        }
+        header.setBattery(if (connected) status.battery else null, batteryLabel,
+            connected && !status.penInitialized)
+
+        placementWarning.isVisible = status.placementError != 0
+        placementWarning.summary = getString(R.string.stylus_attachment_warning,
+            status.placementError)
+
+        // Gestures: hide what this pen cannot do, and say why the rest is
+        // locked instead of only greying it out.
+        proOnly.forEach { it.isVisible = touchFilm }
+        val controlsReady = connected && status.penInitialized
+        gestureControls.forEach { it.isEnabled = controlsReady }
+        gesturesNote.isVisible = touchFilm && !controlsReady
+        gesturesNote.summary = getString(if (connected) R.string.stylus_gestures_initializing
+            else R.string.stylus_gestures_not_ready)
+
+        aboutCategory.isVisible = connected || modelRes != null
+        model.summary = modelName
+        firmware.isVisible = connected
+        val revision = status.firmwareRevision
+        firmware.summary = when {
+            revision == null -> getString(R.string.stylus_unavailable)
+            status.updateState == "available" ->
+                getString(R.string.stylus_firmware_available, status.updateVersion)
+            status.updateState == "updating" ->
+                getString(R.string.stylus_firmware_progress, status.updateProgress)
+            else -> getString(R.string.stylus_firmware_summary_fmt, revision)
+        }
     }
 
     private fun getSecure(key: String): String? =
         Settings.Secure.getString(requireContext().contentResolver, key)
+
+    private fun putSecure(key: String, value: String): Boolean =
+        Settings.Secure.putString(requireContext().contentResolver, key, value)
 
     private fun showPaletteEditor() {
         val context = requireContext()
@@ -478,12 +464,10 @@ class StylusSettingsFragment : SettingsBasePreferenceFragment() {
         if (PenControls.isTouchFilm(StylusStatusStore.snapshot(requireContext())))
             StylusSettingsContract.DEFAULT_PINCH_ACTION else StylusSettingsContract.Action.RECENTS
 
-    private fun putSecure(key: String, value: String): Boolean =
-        Settings.Secure.putString(requireContext().contentResolver, key, value)
-
     private companion object {
         const val KEY_CONNECTION = "stylus_connection"
-        const val KEY_BATTERY = "stylus_battery"
         const val KEY_FIRMWARE = "stylus_firmware"
+        const val BATTERY_CHANNEL = "pen_battery"
+        const val EXTRA_HOLD_SUMMARY = "hold_summary"
     }
 }
