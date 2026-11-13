@@ -48,4 +48,24 @@
     <string name="desktop_windowing_reboot">Reboot</string>
     <string name="desktop_windowing_later">Later</string>
     <string name="desktop_windowing_failed">Couldn\'t change desktop windowing</string>
+
+    <!-- Settings page -->
+    <string name="keyboard_name">Keyboard cover</string>
+    <string name="keyboard_header_disconnected">Not connected</string>
+    <string name="keyboard_header_connected">Connected</string>
+    <string name="keyboard_header_connected_fw">Connected · Firmware <xliff:g id="version" example="1294">%1$s</xliff:g></string>
+    <string name="keyboard_header_keys_off">Connected · Keys paused</string>
+    <string name="keyboard_category_keys">Shortcut keys</string>
+    <string name="keyboard_category_backlight">Backlight</string>
+    <string name="keyboard_category_touchpad">Touchpad</string>
+    <string name="keyboard_category_cover">Cover</string>
+    <string name="keyboard_category_update">Firmware update</string>
+    <string name="keyboard_category_about">About</string>
+    <string name="keyboard_special_keys_title">Special keys</string>
+    <string name="keyboard_special_keys_summary">The Do Not Disturb key turns Do Not Disturb on or off. The other function keys follow Android\'s shortcuts.</string>
+    <string name="keyboard_backlight_summary">Used when automatic backlight is off</string>
+    <string name="keyboard_angle_title">Typing angle</string>
+    <string name="keyboard_angle_summary">The keys and touchpad work when the cover is open between 45° and 185°. Closed, folded back or tent positions ignore them.</string>
+    <string name="keyboard_show_ime_title">On-screen keyboard</string>
+    <string name="keyboard_show_ime_summary">Keep showing the on-screen keyboard while the keyboard cover is attached</string>
 </resources>

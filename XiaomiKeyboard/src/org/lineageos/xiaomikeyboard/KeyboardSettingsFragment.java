@@ -7,6 +7,7 @@ package org.lineageos.xiaomikeyboard;
 import android.app.AlertDialog;
 import android.os.Bundle;
 import android.os.PowerManager;
+import android.provider.Settings;
 import android.widget.Toast;
 
 import androidx.preference.Preference;
@@ -22,6 +23,12 @@ public class KeyboardSettingsFragment extends SettingsBasePreferenceFragment
         implements Preference.OnPreferenceChangeListener, PadKeyboardManager.Listener {
 
     private PadKeyboardManager mKeyboard;
+    private Preference mHeader;
+    private SwitchPreferenceCompat mShowIme;
+    private PreferenceCategory mBacklightCategory;
+    private PreferenceCategory mTouchpadCategory;
+    private PreferenceCategory mDesktopCategory;
+    private PreferenceCategory mUpdateCategory;
     private Preference mNotConnected;
     private SwitchPreferenceCompat mAuto;
     private SeekBarPreference mBrightness;
@@ -45,13 +52,22 @@ public class KeyboardSettingsFragment extends SettingsBasePreferenceFragment
         getPreferenceManager().setSharedPreferencesName(PadKeyboardManager.PREFS_NAME);
         setPreferencesFromResource(R.xml.keyboard_settings, rootKey);
         mKeyboard = PadKeyboardManager.get(requireContext());
+        mHeader = findPreference("keyboard_illustration");
         mNotConnected = findPreference("keyboard_not_connected");
+        mBacklightCategory = findPreference("keyboard_backlight_category");
+        mTouchpadCategory = findPreference("keyboard_touchpad_category");
+        mDesktopCategory = findPreference("desktop_windowing_category");
+        mUpdateCategory = findPreference("keyboard_update_category");
+        mShowIme = findPreference("keyboard_show_ime");
+        mShowIme.setOnPreferenceChangeListener((p, value) -> Settings.Secure.putInt(
+                requireContext().getContentResolver(),
+                Settings.Secure.SHOW_IME_WITH_HARD_KEYBOARD, (Boolean) value ? 1 : 0));
         mAuto = findPreference(PadKeyboardManager.KEY_BACKLIGHT_AUTO);
         mBrightness = findPreference(PadKeyboardManager.KEY_BACKLIGHT_LEVEL);
         mTouchpad = findPreference(PadKeyboardManager.KEY_TOUCHPAD);
         mShortcuts = findPreference("keyboard_shortcuts");
         mDesktop = findPreference("desktop_windowing");
-        mDesktop.setVisible(DesktopWindowing.isAvailable(requireContext()));
+        mDesktopCategory.setVisible(DesktopWindowing.isAvailable(requireContext()));
         mDesktop.setOnPreferenceChangeListener((p, value) -> setDesktopWindowing((Boolean) value));
         mAbout = findPreference("keyboard_about");
         mModel = findPreference("keyboard_model");
@@ -151,18 +167,30 @@ public class KeyboardSettingsFragment extends SettingsBasePreferenceFragment
         boolean connected = mKeyboard.isConnected();
         boolean updating = mKeyboard.isUpdating();
         mNotConnected.setVisible(!connected);
+        String firmware = mKeyboard.getKeyboardVersion();
+        if (!connected) {
+            mHeader.setSummary(R.string.keyboard_header_disconnected);
+        } else if (!mKeyboard.areKeysEnabled()) {
+            mHeader.setSummary(R.string.keyboard_header_keys_off);
+        } else if (firmware != null) {
+            mHeader.setSummary(getString(R.string.keyboard_header_connected_fw, firmware));
+        } else {
+            mHeader.setSummary(R.string.keyboard_header_connected);
+        }
         boolean backlight = mKeyboard.hasBacklight();
-        mAuto.setVisible(!connected || backlight);
-        mBrightness.setVisible(!connected || backlight);
+        mBacklightCategory.setVisible(!connected || backlight);
         mAuto.setEnabled(connected && !updating);
         mBrightness.setEnabled(connected && !updating && !mAuto.isChecked());
-        mTouchpad.setVisible(!connected || mKeyboard.hasTouchpad());
+        mTouchpadCategory.setVisible(!connected || mKeyboard.hasTouchpad());
         mTouchpad.setEnabled(connected && !updating);
         // Android's physical keyboard page closes at once without a keyboard.
         mShortcuts.setEnabled(connected);
         mDesktop.setChecked(DesktopWindowing.isEnabled(requireContext()));
+        mShowIme.setChecked(Settings.Secure.getInt(requireContext().getContentResolver(),
+                Settings.Secure.SHOW_IME_WITH_HARD_KEYBOARD, 0) != 0);
 
         mAbout.setVisible(connected);
+        mUpdateCategory.setVisible(connected);
         mModel.setSummary(valueOrUnknown(mKeyboard.getPid()));
         mKeyboardVersion.setSummary(valueOrUnknown(mKeyboard.getKeyboardVersion()));
         mTouchpadVersion.setVisible(mKeyboard.hasTouchpad());
