@@ -8,6 +8,8 @@ package org.lineageos.xiaomikeyboard;
  * The hinge angle between the tablet and the keyboard cover, from both
  * gravity vectors. Like stock, the keys only work between 45 and 185 degrees
  * (laptop positions); closed, folded flat behind or tent positions ignore them.
+ * Once measured, the state only changes after the angle crosses a limit by
+ * HYSTERESIS degrees, so sensor jitter near a limit does not toggle the keys.
  */
 final class KeyboardAngle {
 
@@ -15,17 +17,20 @@ final class KeyboardAngle {
     private static final float MOTION_TOLERANCE = 0.294f;
     private static final int WORK_LOWER = 45;
     private static final int WORK_UPPER = 185;
+    private static final int HYSTERESIS = 5;
 
     private final float[] mPad = new float[3];
     private final float[] mKeyboard = new float[3];
     private boolean mPadReady;
     private boolean mKeyboardReady;
     private int mAngle = -1;
+    private boolean mWorking = true;
 
     void reset() {
         mPadReady = false;
         mKeyboardReady = false;
         mAngle = -1;
+        mWorking = true;
     }
 
     int getAngle() {
@@ -34,7 +39,11 @@ final class KeyboardAngle {
 
     /** Until both vectors are known the keys keep working. */
     boolean isWorking() {
-        return mAngle < 0 || (mAngle >= WORK_LOWER && mAngle < WORK_UPPER);
+        return mAngle < 0 || mWorking;
+    }
+
+    private static boolean inRange(int angle, int margin) {
+        return angle >= WORK_LOWER + margin && angle < WORK_UPPER - margin;
     }
 
     /** Returns true when the working state may have changed. */
@@ -73,6 +82,14 @@ final class KeyboardAngle {
             return false;
         }
         boolean wasWorking = isWorking();
+        if (mAngle < 0) {
+            // First measurement: the plain limits.
+            mWorking = inRange(angle, 0);
+        } else if (mWorking) {
+            mWorking = inRange(angle, -HYSTERESIS);
+        } else {
+            mWorking = inRange(angle, HYSTERESIS);
+        }
         mAngle = angle;
         return wasWorking != isWorking();
     }
