@@ -40,6 +40,20 @@ object XiaomiStylusDevice {
 
     fun isStylus(device: InputDevice?): Boolean = typeOf(device) != TYPE_NONE
 
+    /**
+     * Retail name for the PnP ID the pen reports over GATT. The Focus Pen
+     * Pro (P81C, 0x5081) and the Focus Pen (0x4d80) both advertise on the
+     * Primax vendor id, so only the product id tells them apart.
+     */
+    fun modelName(vendorId: Int?, productId: Int?): Int? {
+        if (vendorId != VENDOR_PRIMAX) return null
+        return when (productId) {
+            20609, 12929 -> R.string.pen_model_focus_pen_pro
+            19840, 12928 -> R.string.pen_model_focus_pen
+            else -> null
+        }
+    }
+
     private const val TYPE_NONE = 0
     private const val VENDOR_PRIMAX = 34
     private const val VENDOR_XIAOMI = 6421

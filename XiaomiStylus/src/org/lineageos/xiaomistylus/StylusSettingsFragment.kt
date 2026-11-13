@@ -26,6 +26,7 @@ import org.lineageos.xiaomistylus.AccessoryConnectionPreference
  */
 class StylusSettingsFragment : SettingsBasePreferenceFragment() {
 
+    private lateinit var hero: Preference
     private lateinit var connection: AccessoryConnectionPreference
     private lateinit var battery: Preference
     private lateinit var notConnected: Preference
@@ -46,7 +47,7 @@ class StylusSettingsFragment : SettingsBasePreferenceFragment() {
         val resources = context.resources
         preferenceScreen = preferenceManager.createPreferenceScreen(context)
 
-        preferenceScreen.addPreference(Preference(context).apply {
+        hero = Preference(context).apply {
             layoutResource = R.layout.accessory_pen_hero_preference
             order = 0
             setIcon(R.drawable.accessory_stylus_show_icon)
@@ -54,7 +55,8 @@ class StylusSettingsFragment : SettingsBasePreferenceFragment() {
             setSummary(R.string.stylus_attach_guide)
             isSelectable = false
             isIconSpaceReserved = false
-        })
+        }
+        preferenceScreen.addPreference(hero)
         preferenceScreen.addPreference(Preference(context).apply {
             order = 30
             setTitle(R.string.stylus_palette_title)
@@ -384,6 +386,11 @@ class StylusSettingsFragment : SettingsBasePreferenceFragment() {
             else -> status.state
         }
         val connected = connectionState == StylusConnectionState.CONNECTED
+        // The page used to say "Focus Pen" for every pen, the Pro included.
+        val model = getString(XiaomiStylusDevice.modelName(status.vendorId, status.productId)
+            ?: R.string.pen_category_title)
+        hero.title = model
+        activity?.title = model
         placementWarning.isVisible = status.placementError != 0
         placementWarning.summary = getString(R.string.stylus_attachment_warning,
             status.placementError)
