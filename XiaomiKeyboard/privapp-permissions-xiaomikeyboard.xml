@@ -11,6 +11,7 @@
         <permission name="android.permission.OVERRIDE_COMPAT_CHANGE_CONFIG" />
         <permission name="android.permission.WRITE_SECURE_SETTINGS" />
         <permission name="android.permission.MANAGE_NOTIFICATIONS" />
+        <permission name="android.permission.STATUS_BAR" />
         <permission name="android.permission.CHANGE_OVERLAY_PACKAGES" />
         <permission name="android.permission.REBOOT" />
     </privapp-permissions>
