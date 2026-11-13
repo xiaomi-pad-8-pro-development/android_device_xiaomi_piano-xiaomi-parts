@@ -102,8 +102,9 @@ public final class PadKeyboardManager implements KeyboardTransport.Listener {
     private volatile boolean mPogoFault;
     private volatile boolean mScreenOn = true;
     private volatile boolean mSleeping;
-    // Off until the cover is attached at a working angle, so that the cover's
-    // input devices, which exist even when it is detached, do not show a cursor.
+    // Off until the cover is attached, and while it is at an angle where its
+    // keys are ignored (an angle not measured yet counts as working). The
+    // driver only creates the cover's input devices while it is attached.
     private volatile boolean mKeysEnabled = false;
     private boolean mInTabletMode;
     // Only trust an asserted hall state after the cover angle agrees. Retain
@@ -683,9 +684,9 @@ public final class PadKeyboardManager implements KeyboardTransport.Listener {
             mLastBacklight = -1;
             mLastCaps = null;
         }
-        // The cover's HID devices remain registered even when it is detached.
-        // Apply the MCU connection state immediately instead of waiting for a
-        // gravity reply, which stops arriving after detach.
+        // The driver removes the cover's HID devices on detach. Apply the MCU
+        // connection state immediately anyway instead of waiting for a gravity
+        // reply, which stops arriving after detach.
         updateKeysEnabled();
         notifyChanged();
     }
