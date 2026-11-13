@@ -218,10 +218,12 @@ public class KeyboardSettingsFragment extends SettingsBasePreferenceFragment
 
     @Override
     public void onUpdateProgress(boolean touchpad, int percent) {
-        mProgress = getString(R.string.keyboard_update_progress, percent);
-        if (isAdded()) {
-            updateState();
+        // Posted from the keyboard thread; the page may have left meanwhile.
+        if (!isAdded()) {
+            return;
         }
+        mProgress = getString(R.string.keyboard_update_progress, percent);
+        updateState();
     }
 
     @Override
@@ -239,8 +241,9 @@ public class KeyboardSettingsFragment extends SettingsBasePreferenceFragment
 
     @Override
     public void onMcuUpdateProgress(int percent) {
+        if (!isAdded()) return;
         mMcuProgress = getString(R.string.keyboard_update_progress, percent);
-        if (isAdded()) updateState();
+        updateState();
     }
 
     @Override
