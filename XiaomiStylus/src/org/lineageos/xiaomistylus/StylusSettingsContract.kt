@@ -32,6 +32,7 @@ object StylusSettingsContract {
         const val MEDIA_PLAY_PAUSE = "media_play_pause"
         const val LASER = "laser"
         const val MENU = "menu"
+        const val ASSISTANT = "assistant"
 
         val SUPPORTED: Set<String> = setOf(
             NONE,
@@ -43,6 +44,7 @@ object StylusSettingsContract {
             MEDIA_PLAY_PAUSE,
             LASER,
             MENU,
+            ASSISTANT,
         )
     }
 

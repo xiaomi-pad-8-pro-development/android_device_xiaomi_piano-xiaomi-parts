@@ -34,6 +34,7 @@ object StylusActions {
             StylusSettingsContract.Action.HOME -> injectKey(context, KeyEvent.KEYCODE_HOME)
             StylusSettingsContract.Action.RECENTS -> injectKey(context, KeyEvent.KEYCODE_APP_SWITCH)
             StylusSettingsContract.Action.MEDIA_PLAY_PAUSE -> sendMediaPlayPause(context)
+            StylusSettingsContract.Action.ASSISTANT -> openAssistant(context)
             else -> Log.w(TAG, "Ignoring unsupported stylus action $action")
         }
     }
@@ -110,6 +111,17 @@ object StylusActions {
         val up = KeyEvent.changeAction(down, KeyEvent.ACTION_UP)
         inputManager.injectInputEvent(down, InputManager.INJECT_INPUT_EVENT_MODE_ASYNC)
         inputManager.injectInputEvent(up, InputManager.INJECT_INPUT_EVENT_MODE_ASYNC)
+    }
+
+    private fun openAssistant(context: Context) {
+        try {
+            context.startActivityAsUser(Intent(Intent.ACTION_ASSIST)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK), UserHandle.CURRENT)
+        } catch (exception: ActivityNotFoundException) {
+            Log.w(TAG, "No assistant handles ACTION_ASSIST", exception)
+        } catch (exception: RuntimeException) {
+            Log.e(TAG, "Could not open the assistant", exception)
+        }
     }
 
     private fun sendMediaPlayPause(context: Context) {
