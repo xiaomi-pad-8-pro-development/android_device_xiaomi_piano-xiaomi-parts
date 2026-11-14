@@ -32,6 +32,10 @@ class StylusSettingsFragment : SettingsBasePreferenceFragment() {
     private lateinit var header: AccessoryConnectionPreference
     private lateinit var placementWarning: Preference
 
+    // Stock MiuiStylusSettings.disable() greys every row while the pen is
+    // away; these are the categories that follow the connection.
+    private val penCategories = mutableListOf<PreferenceCategory>()
+
     private lateinit var gesturesCategory: PreferenceCategory
     private lateinit var gesturesNote: Preference
     private val gestureControls = mutableListOf<Preference>()
@@ -68,7 +72,7 @@ class StylusSettingsFragment : SettingsBasePreferenceFragment() {
         preferenceScreen.addPreference(placementWarning)
 
         // Buttons.
-        val buttons = category(10, R.string.stylus_category_buttons)
+        val buttons = category(10, R.string.stylus_category_buttons).also(penCategories::add)
         buttons.addPreference(createActionPreference(
             StylusSettingsContract.PRIMARY_BUTTON_ACTION,
             R.string.stylus_primary_button_title, R.drawable.ic_button,
@@ -103,7 +107,7 @@ class StylusSettingsFragment : SettingsBasePreferenceFragment() {
 
         // Gestures. Squeeze exists on every pen KeyHandler knows; the
         // touch-film gestures and their tuning only on the Focus Pen Pro.
-        gesturesCategory = category(20, R.string.stylus_category_gestures)
+        gesturesCategory = category(20, R.string.stylus_category_gestures).also(penCategories::add)
         gesturesNote = Preference(context).apply {
             setIcon(R.drawable.ic_info)
             isSelectable = false
@@ -137,7 +141,7 @@ class StylusSettingsFragment : SettingsBasePreferenceFragment() {
         // Writing. This ROM has no palm rejection or pen refresh rate
         // setting, so neither is offered. PenRefreshRate raises the refresh rate
         // on its own while the pen is off its edge.
-        val writing = category(30, R.string.stylus_category_writing)
+        val writing = category(30, R.string.stylus_category_writing).also(penCategories::add)
         writing.addPreference(createSecureSwitch(Settings.Secure.STYLUS_HANDWRITING_ENABLED,
             R.string.stylus_handwriting_title, R.string.stylus_handwriting_summary, R.drawable.ic_pen))
         createSystemSwitch(PenControls.HOVER, R.string.stylus_hover_enabled,
@@ -156,6 +160,7 @@ class StylusSettingsFragment : SettingsBasePreferenceFragment() {
 
         // Notifications.
         val notifications = category(40, R.string.stylus_category_notifications)
+            .also(penCategories::add)
         batteryNotification = Preference(context).apply {
             setIcon(R.drawable.ic_notifications)
             setTitle(R.string.stylus_battery_notification_title)
@@ -166,7 +171,7 @@ class StylusSettingsFragment : SettingsBasePreferenceFragment() {
         notifications.addPreference(batteryNotification)
 
         // About.
-        aboutCategory = category(50, R.string.stylus_category_about)
+        aboutCategory = category(50, R.string.stylus_category_about).also(penCategories::add)
         model = Preference(context).apply {
             setIcon(R.drawable.ic_info)
             setTitle(R.string.stylus_model_title)
@@ -420,9 +425,11 @@ class StylusSettingsFragment : SettingsBasePreferenceFragment() {
         gesturesNote.summary = getString(if (connected) R.string.stylus_gestures_initializing
             else R.string.stylus_gestures_not_ready)
 
+        // Stock keeps the rows and greys them (MiuiStylusSettings.disable()).
+        penCategories.forEach { it.isEnabled = connected }
+
         aboutCategory.isVisible = connected || modelRes != null
         model.summary = modelName
-        firmware.isVisible = connected
         val revision = status.firmwareRevision
         firmware.summary = when {
             revision == null -> getString(R.string.stylus_unavailable)
