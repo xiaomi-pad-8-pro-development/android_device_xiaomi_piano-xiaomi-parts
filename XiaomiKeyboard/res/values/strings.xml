@@ -3,7 +3,6 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="keyboard_settings_summary">Connection, shortcuts and updates</string>
     <string name="keyboard_settings_title">Keyboard cover</string>
-    <string name="keyboard_not_connected">Attach the keyboard cover to change these settings</string>
     <string name="keyboard_backlight_auto_title">Automatic backlight</string>
     <string name="keyboard_backlight_auto_summary">Adjust to the ambient light</string>
     <string name="keyboard_backlight_title">Backlight brightness</string>
@@ -41,7 +40,7 @@
     <string name="keyboard_update_failed">The update failed. Reattach the keyboard cover and try again.</string>
     <string name="keyboard_cover_title">Keyboard cover settings</string>
     <string name="keyboard_layout_title">Shortcuts, layout and pointer</string>
-    <string name="keyboard_layout_summary">Keyboard shortcuts, layouts, pointer speed and scrolling</string>
+    <string name="keyboard_layout_summary">Shortcuts, layouts, pointer speed and scrolling. The Do Not Disturb key turns Do Not Disturb on or off.</string>
     <string name="desktop_windowing_title">Desktop windowing</string>
     <string name="desktop_windowing_summary">Open apps in resizable windows. Turn off if apps glitch with the keyboard cover. Takes effect after a reboot.</string>
     <string name="desktop_windowing_reboot_message">Reboot now to apply the desktop windowing change?</string>
@@ -51,7 +50,7 @@
 
     <!-- Settings page -->
     <string name="keyboard_name">Keyboard cover</string>
-    <string name="keyboard_header_disconnected">Not connected</string>
+    <string name="keyboard_header_disconnected">Not connected. Attach the keyboard cover to use it and change these settings.</string>
     <string name="keyboard_header_connected">Connected</string>
     <string name="keyboard_header_connected_fw">Connected · Firmware <xliff:g id="version" example="1294">%1$s</xliff:g></string>
     <string name="keyboard_header_keys_off">Connected · Keys paused</string>
@@ -61,8 +60,6 @@
     <string name="keyboard_category_cover">Cover</string>
     <string name="keyboard_category_update">Firmware update</string>
     <string name="keyboard_category_about">About</string>
-    <string name="keyboard_special_keys_title">Special keys</string>
-    <string name="keyboard_special_keys_summary">The Do Not Disturb key turns Do Not Disturb on or off. The other function keys follow Android\'s shortcuts.</string>
     <string name="keyboard_backlight_summary">Used when automatic backlight is off</string>
     <string name="keyboard_angle_title">Typing angle</string>
     <string name="keyboard_angle_summary">The keys and touchpad work when the cover is open between 45° and 185°. Closed, folded back or tent positions ignore them.</string>

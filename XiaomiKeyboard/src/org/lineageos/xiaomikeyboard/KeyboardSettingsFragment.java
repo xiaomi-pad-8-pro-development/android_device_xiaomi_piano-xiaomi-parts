@@ -29,7 +29,6 @@ public class KeyboardSettingsFragment extends SettingsBasePreferenceFragment
     private PreferenceCategory mTouchpadCategory;
     private PreferenceCategory mDesktopCategory;
     private PreferenceCategory mUpdateCategory;
-    private Preference mNotConnected;
     private SwitchPreferenceCompat mAuto;
     private SeekBarPreference mBrightness;
     private SwitchPreferenceCompat mTouchpad;
@@ -53,7 +52,6 @@ public class KeyboardSettingsFragment extends SettingsBasePreferenceFragment
         setPreferencesFromResource(R.xml.keyboard_settings, rootKey);
         mKeyboard = PadKeyboardManager.get(requireContext());
         mHeader = findPreference("keyboard_illustration");
-        mNotConnected = findPreference("keyboard_not_connected");
         mBacklightCategory = findPreference("keyboard_backlight_category");
         mTouchpadCategory = findPreference("keyboard_touchpad_category");
         mDesktopCategory = findPreference("desktop_windowing_category");
@@ -166,7 +164,6 @@ public class KeyboardSettingsFragment extends SettingsBasePreferenceFragment
     private void updateState() {
         boolean connected = mKeyboard.isConnected();
         boolean updating = mKeyboard.isUpdating();
-        mNotConnected.setVisible(!connected);
         String firmware = mKeyboard.getKeyboardVersion();
         if (!connected) {
             mHeader.setSummary(R.string.keyboard_header_disconnected);

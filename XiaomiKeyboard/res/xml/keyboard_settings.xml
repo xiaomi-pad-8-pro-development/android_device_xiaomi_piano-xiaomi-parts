@@ -15,22 +15,9 @@
         android:selectable="false"
         app:iconSpaceReserved="false" />
 
-    <Preference
-        android:key="keyboard_not_connected"
-        android:icon="@drawable/ic_info"
-        android:summary="@string/keyboard_not_connected"
-        android:selectable="false" />
-
     <PreferenceCategory
         android:key="keyboard_keys_category"
         android:title="@string/keyboard_category_keys">
-
-        <Preference
-            android:key="keyboard_special_keys"
-            android:icon="@drawable/ic_keyboard"
-            android:title="@string/keyboard_special_keys_title"
-            android:summary="@string/keyboard_special_keys_summary"
-            android:selectable="false" />
 
         <Preference
             android:key="keyboard_shortcuts"
