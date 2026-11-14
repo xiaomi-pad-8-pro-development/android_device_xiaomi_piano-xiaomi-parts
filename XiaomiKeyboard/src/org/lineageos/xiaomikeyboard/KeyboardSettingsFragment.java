@@ -33,6 +33,7 @@ public class KeyboardSettingsFragment extends SettingsBasePreferenceFragment
     private SeekBarPreference mBrightness;
     private SwitchPreferenceCompat mTouchpad;
     private Preference mShortcuts;
+    private Preference mAngle;
     private SwitchPreferenceCompat mDesktop;
     private PreferenceCategory mAbout;
     private Preference mModel;
@@ -64,6 +65,7 @@ public class KeyboardSettingsFragment extends SettingsBasePreferenceFragment
         mBrightness = findPreference(PadKeyboardManager.KEY_BACKLIGHT_LEVEL);
         mTouchpad = findPreference(PadKeyboardManager.KEY_TOUCHPAD);
         mShortcuts = findPreference("keyboard_shortcuts");
+        mAngle = findPreference("keyboard_angle");
         mDesktop = findPreference("desktop_windowing");
         mDesktopCategory.setVisible(DesktopWindowing.isAvailable(requireContext()));
         mDesktop.setOnPreferenceChangeListener((p, value) -> setDesktopWindowing((Boolean) value));
@@ -175,13 +177,16 @@ public class KeyboardSettingsFragment extends SettingsBasePreferenceFragment
             mHeader.setSummary(R.string.keyboard_header_connected);
         }
         boolean backlight = mKeyboard.hasBacklight();
-        mBacklightCategory.setVisible(!connected || backlight);
+        // Stock only adds the backlight category for a connected cover that
+        // reports it (MiuiPhysicalKeyboardFragment.updateHardKeyboards()).
+        mBacklightCategory.setVisible(connected && backlight);
         mAuto.setEnabled(connected && !updating);
         mBrightness.setEnabled(connected && !updating && !mAuto.isChecked());
         mTouchpadCategory.setVisible(!connected || mKeyboard.hasTouchpad());
         mTouchpad.setEnabled(connected && !updating);
         // Android's physical keyboard page closes at once without a keyboard.
         mShortcuts.setEnabled(connected);
+        mAngle.setEnabled(connected);
         mDesktop.setChecked(DesktopWindowing.isEnabled(requireContext()));
         mShowIme.setChecked(Settings.Secure.getInt(requireContext().getContentResolver(),
                 Settings.Secure.SHOW_IME_WITH_HARD_KEYBOARD, 0) != 0);
