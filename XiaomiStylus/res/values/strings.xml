@@ -21,7 +21,7 @@
     <string name="stylus_button_actions_title">Button actions</string>
     <string name="stylus_primary_button_title">Primary button</string>
     <string name="stylus_secondary_button_title">Secondary button</string>
-    <string name="stylus_pinch_title">Squeeze</string>
+    <string name="stylus_pinch_title">Pinch action</string>
     <string name="stylus_screen_off_quick_note_title">Quick note with screen off</string>
     <string name="stylus_screen_off_quick_note_summary">Touch the dark screen with the pen to start a note</string>
     <string name="stylus_connected">Connected</string>
@@ -38,7 +38,7 @@
     <!-- Settings page -->
     <string name="stylus_header_disconnected_guide">Not connected. Attach the pen to the magnetic edge to pair and charge it.</string>
     <string name="stylus_category_buttons">Buttons</string>
-    <string name="stylus_category_gestures">Gestures</string>
+    <string name="stylus_category_gestures">Actions</string>
     <string name="stylus_category_writing">Writing</string>
     <string name="stylus_category_notifications">Notifications</string>
     <string name="stylus_category_about">About</string>
