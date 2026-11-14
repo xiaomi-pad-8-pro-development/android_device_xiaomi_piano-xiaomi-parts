@@ -40,6 +40,9 @@ class StylusSettingsFragment : SettingsBasePreferenceFragment() {
     private lateinit var gesturesNote: Preference
     private val gestureControls = mutableListOf<Preference>()
     private val proOnly = mutableListOf<Preference>()
+    // Side buttons exist only on the plain Focus Pen; the Pro has squeeze and
+    // double-tap instead.
+    private val buttonsOnly = mutableListOf<Preference>()
 
     private lateinit var batteryNotification: Preference
 
@@ -76,11 +79,13 @@ class StylusSettingsFragment : SettingsBasePreferenceFragment() {
         buttons.addPreference(createActionPreference(
             StylusSettingsContract.PRIMARY_BUTTON_ACTION,
             R.string.stylus_primary_button_title, R.drawable.ic_button,
-            StylusSettingsContract.DEFAULT_PRIMARY_BUTTON_ACTION, holdSummary = true))
+            StylusSettingsContract.DEFAULT_PRIMARY_BUTTON_ACTION, holdSummary = true)
+            .also(buttonsOnly::add))
         buttons.addPreference(createActionPreference(
             StylusSettingsContract.SECONDARY_BUTTON_ACTION,
             R.string.stylus_secondary_button_title, R.drawable.ic_button,
-            StylusSettingsContract.DEFAULT_SECONDARY_BUTTON_ACTION, holdSummary = true))
+            StylusSettingsContract.DEFAULT_SECONDARY_BUTTON_ACTION, holdSummary = true)
+            .also(buttonsOnly::add))
         buttons.addPreference(Preference(context).apply {
             setIcon(R.drawable.ic_apps)
             setTitle(R.string.stylus_palette_title)
@@ -419,6 +424,7 @@ class StylusSettingsFragment : SettingsBasePreferenceFragment() {
         // Gestures: hide what this pen cannot do, and say why the rest is
         // locked instead of only greying it out.
         proOnly.forEach { it.isVisible = touchFilm }
+        buttonsOnly.forEach { it.isVisible = !touchFilm }
         val controlsReady = connected && status.penInitialized
         gestureControls.forEach { it.isEnabled = controlsReady }
         gesturesNote.isVisible = touchFilm && !controlsReady
