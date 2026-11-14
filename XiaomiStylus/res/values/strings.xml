@@ -54,8 +54,6 @@
     <string name="stylus_hover_summary">Let the pen act when its tip hovers just above the screen</string>
     <string name="stylus_writing_tool_summary">Which pen feel the drawing vibration imitates</string>
     <string name="stylus_writing_feedback_summary">Vibration in the pen while you draw</string>
-    <string name="stylus_refresh_title">Smooth pen input</string>
-    <string name="stylus_refresh_summary">The screen runs at 120 Hz while the pen is off its magnetic edge, so the pen is tracked at full speed</string>
     <string name="stylus_battery_notification_title">Battery notification</string>
     <string name="stylus_battery_notification_summary">Show the pen battery level in the notification shade. The attach and low-battery pop-ups always show.</string>
     <string name="stylus_model_title">Model</string>

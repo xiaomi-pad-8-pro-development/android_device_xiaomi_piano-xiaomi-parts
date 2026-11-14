@@ -135,8 +135,8 @@ class StylusSettingsFragment : SettingsBasePreferenceFragment() {
             dependOn(it, PenControls.SLIDE) }, control = false, pro = true)
 
         // Writing. This ROM has no palm rejection or pen refresh rate
-        // setting, so neither is offered; the refresh rate row only explains
-        // what PenRefreshRate does on its own.
+        // setting, so neither is offered. PenRefreshRate raises the refresh rate
+        // on its own while the pen is off its edge.
         val writing = category(30, R.string.stylus_category_writing)
         writing.addPreference(createSecureSwitch(Settings.Secure.STYLUS_HANDWRITING_ENABLED,
             R.string.stylus_handwriting_title, R.string.stylus_handwriting_summary, R.drawable.ic_pen))
@@ -153,12 +153,6 @@ class StylusSettingsFragment : SettingsBasePreferenceFragment() {
             R.string.stylus_writing_feedback_summary, R.array.stylus_feedback_levels, 0..5, 0).also {
             writing.addPreference(it); gestureControls.add(it); proOnly.add(it)
         }
-        writing.addPreference(Preference(context).apply {
-            setIcon(R.drawable.ic_speed)
-            setTitle(R.string.stylus_refresh_title)
-            setSummary(R.string.stylus_refresh_summary)
-            isSelectable = false
-        })
 
         // Notifications.
         val notifications = category(40, R.string.stylus_category_notifications)
