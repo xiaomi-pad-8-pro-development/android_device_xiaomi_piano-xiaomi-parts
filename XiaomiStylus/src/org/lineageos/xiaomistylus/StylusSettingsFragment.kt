@@ -113,7 +113,7 @@ class StylusSettingsFragment : SettingsBasePreferenceFragment() {
             R.string.stylus_double_tap_summary, R.drawable.ic_touch_app, 1), control = true, pro = true)
         addGesture(createActionPreference(StylusSettingsContract.DOUBLE_TAP_ACTION,
             R.string.stylus_double_tap_action, 0, StylusSettingsContract.Action.NONE).also {
-            it.dependency = PenControls.DOUBLE_TAP }, control = false, pro = true)
+            dependOn(it, PenControls.DOUBLE_TAP) }, control = false, pro = true)
         addGesture(createSystemSwitch(PenControls.PINCH, R.string.stylus_squeeze_enabled,
             R.string.stylus_squeeze_summary, R.drawable.ic_pen, 5), control = true, pro = true)
         addGesture(createActionPreference(StylusSettingsContract.PINCH_ACTION,
@@ -129,10 +129,10 @@ class StylusSettingsFragment : SettingsBasePreferenceFragment() {
             R.string.stylus_slide_summary, R.drawable.ic_swap_vert, 1), control = true, pro = true)
         addGesture(createActionPreference(StylusSettingsContract.SLIDE_UP_ACTION,
             R.string.stylus_slide_up_action, 0, StylusSettingsContract.Action.NONE).also {
-            it.dependency = PenControls.SLIDE }, control = false, pro = true)
+            dependOn(it, PenControls.SLIDE) }, control = false, pro = true)
         addGesture(createActionPreference(StylusSettingsContract.SLIDE_DOWN_ACTION,
             R.string.stylus_slide_down_action, 0, StylusSettingsContract.Action.NONE).also {
-            it.dependency = PenControls.SLIDE }, control = false, pro = true)
+            dependOn(it, PenControls.SLIDE) }, control = false, pro = true)
 
         // Writing. This ROM has no palm rejection or pen refresh rate
         // setting, so neither is offered; the refresh rate row only explains
@@ -219,6 +219,20 @@ class StylusSettingsFragment : SettingsBasePreferenceFragment() {
             it.setTitle(title)
             preferenceScreen.addPreference(it)
         }
+
+    // Preference.dependency looks the key up through the PreferenceManager,
+    // which does not see this programmatic screen yet and throws. Follow the
+    // switch by hand instead.
+    private fun dependOn(preference: Preference, key: String) {
+        val switch = gesturesCategory.findPreference<SwitchPreferenceCompat>(key) ?: return
+        preference.isEnabled = switch.isChecked
+        val previous = switch.onPreferenceChangeListener
+        switch.setOnPreferenceChangeListener { pref, value ->
+            (previous?.onPreferenceChange(pref, value) ?: true).also {
+                if (it) preference.isEnabled = value as Boolean
+            }
+        }
+    }
 
     private fun addGesture(preference: Preference, control: Boolean, pro: Boolean) {
         gesturesCategory.addPreference(preference)
