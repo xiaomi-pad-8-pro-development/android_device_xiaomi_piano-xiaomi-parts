@@ -59,4 +59,10 @@
     <string name="keyboard_angle_summary">The keys and touchpad work when the cover is open between 45° and 185°. Closed, folded back or tent positions ignore them.</string>
     <string name="keyboard_show_ime_title">On-screen keyboard</string>
     <string name="keyboard_show_ime_summary">Keep showing the on-screen keyboard while the keyboard cover is attached</string>
+    <string name="mic_muted_toast">Microphone off</string>
+    <string name="mic_unmuted_toast">Microphone on</string>
+    <string name="mic_muted_dialog_title">Microphone is off</string>
+    <string name="mic_muted_dialog_message">An app is trying to record, but the microphone was turned off with the keyboard key.</string>
+    <string name="mic_muted_dialog_turn_on">Turn on</string>
+    <string name="mic_muted_dialog_keep_off">Keep off</string>
 </resources>
