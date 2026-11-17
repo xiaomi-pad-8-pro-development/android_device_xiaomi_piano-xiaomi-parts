@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- SPDX-License-Identifier: Apache-2.0 -->
 <!-- Laid out like HyperOS: header card, then keys, backlight, touchpad,
-     cover, desktop windowing, firmware update and about. -->
+     cover, firmware update and about. -->
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:title="@string/keyboard_settings_title">
@@ -81,19 +81,6 @@
             android:icon="@drawable/ic_keyboard"
             android:title="@string/keyboard_show_ime_title"
             android:summary="@string/keyboard_show_ime_summary"
-            android:persistent="false" />
-
-    </PreferenceCategory>
-
-    <PreferenceCategory
-        android:key="desktop_windowing_category"
-        android:title="@string/desktop_windowing_title">
-
-        <SwitchPreferenceCompat
-            android:key="desktop_windowing"
-            android:icon="@drawable/ic_desktop_windows"
-            android:title="@string/desktop_windowing_title"
-            android:summary="@string/desktop_windowing_summary"
             android:persistent="false" />
 
     </PreferenceCategory>

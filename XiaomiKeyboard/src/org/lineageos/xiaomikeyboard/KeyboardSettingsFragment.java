@@ -6,9 +6,7 @@ package org.lineageos.xiaomikeyboard;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
-import android.os.PowerManager;
 import android.provider.Settings;
-import android.widget.Toast;
 
 import androidx.preference.Preference;
 
@@ -27,14 +25,12 @@ public class KeyboardSettingsFragment extends SettingsBasePreferenceFragment
     private SwitchPreferenceCompat mShowIme;
     private PreferenceCategory mBacklightCategory;
     private PreferenceCategory mTouchpadCategory;
-    private PreferenceCategory mDesktopCategory;
     private PreferenceCategory mUpdateCategory;
     private SwitchPreferenceCompat mAuto;
     private SeekBarPreference mBrightness;
     private SwitchPreferenceCompat mTouchpad;
     private Preference mShortcuts;
     private Preference mAngle;
-    private SwitchPreferenceCompat mDesktop;
     private PreferenceCategory mAbout;
     private Preference mModel;
     private Preference mKeyboardVersion;
@@ -55,7 +51,6 @@ public class KeyboardSettingsFragment extends SettingsBasePreferenceFragment
         mHeader = findPreference("keyboard_illustration");
         mBacklightCategory = findPreference("keyboard_backlight_category");
         mTouchpadCategory = findPreference("keyboard_touchpad_category");
-        mDesktopCategory = findPreference("desktop_windowing_category");
         mUpdateCategory = findPreference("keyboard_update_category");
         mShowIme = findPreference("keyboard_show_ime");
         mShowIme.setOnPreferenceChangeListener((p, value) -> Settings.Secure.putInt(
@@ -66,9 +61,6 @@ public class KeyboardSettingsFragment extends SettingsBasePreferenceFragment
         mTouchpad = findPreference(PadKeyboardManager.KEY_TOUCHPAD);
         mShortcuts = findPreference("keyboard_shortcuts");
         mAngle = findPreference("keyboard_angle");
-        mDesktop = findPreference("desktop_windowing");
-        mDesktopCategory.setVisible(DesktopWindowing.isAvailable(requireContext()));
-        mDesktop.setOnPreferenceChangeListener((p, value) -> setDesktopWindowing((Boolean) value));
         mAbout = findPreference("keyboard_about");
         mModel = findPreference("keyboard_model");
         mKeyboardVersion = findPreference("keyboard_version");
@@ -105,22 +97,6 @@ public class KeyboardSettingsFragment extends SettingsBasePreferenceFragment
             mKeyboard.applySettings();
             updateState();
         });
-        return true;
-    }
-
-    private boolean setDesktopWindowing(boolean enabled) {
-        if (!DesktopWindowing.setEnabled(requireContext(), enabled)) {
-            Toast.makeText(requireContext(), R.string.desktop_windowing_failed,
-                    Toast.LENGTH_SHORT).show();
-            return false;
-        }
-        new AlertDialog.Builder(requireContext())
-                .setTitle(R.string.desktop_windowing_title)
-                .setMessage(R.string.desktop_windowing_reboot_message)
-                .setPositiveButton(R.string.desktop_windowing_reboot, (dialog, which) ->
-                        requireContext().getSystemService(PowerManager.class).reboot(null))
-                .setNegativeButton(R.string.desktop_windowing_later, null)
-                .show();
         return true;
     }
 
@@ -187,7 +163,6 @@ public class KeyboardSettingsFragment extends SettingsBasePreferenceFragment
         // Android's physical keyboard page closes at once without a keyboard.
         mShortcuts.setEnabled(connected);
         mAngle.setEnabled(connected);
-        mDesktop.setChecked(DesktopWindowing.isEnabled(requireContext()));
         mShowIme.setChecked(Settings.Secure.getInt(requireContext().getContentResolver(),
                 Settings.Secure.SHOW_IME_WITH_HARD_KEYBOARD, 0) != 0);
 
