@@ -31,6 +31,7 @@ import android.view.KeyEvent
 import android.view.MotionEvent
 import com.android.internal.os.DeviceKeyHandler
 import java.util.ArrayDeque
+import java.util.concurrent.ConcurrentHashMap
 import org.lineageos.xiaomistylus.pencilengine.PencilEngineLease
 
 /**
@@ -45,6 +46,10 @@ class KeyHandler(private val context: Context) : DeviceKeyHandler {
     private val recentEventOrder = ArrayDeque<EventIdentity>()
     private val laserKeyLease = PenLaserKeyLease()
     private val toolDispatch = PenToolDispatchPolicy()
+    private val penSwipe = PenSwipe(context)
+    // Button presses whose long-press action ran. Like stock, their key-up
+    // is kept from the app; the key-down already reached it.
+    private val triggeredPresses: MutableSet<Pair<Int, Long>> = ConcurrentHashMap.newKeySet()
 
     init {
         // A volatile, five-second authorization renewed only while the Parts
@@ -120,6 +125,41 @@ class KeyHandler(private val context: Context) : DeviceKeyHandler {
         }
 
         if (!XiaomiStylusDevice.isStylus(event.device)) return event
+        val top = PenAppRules.foreground(context)
+        // Stock runs no pen shortcut in game mode and hands the keys to the game.
+        if (top != null && PenAppRules.isGame(context, top)) return event
+        if (top != null && XiaomiStylusDevice.typeOf(event.device) >= 3 &&
+            PenAppRules.isRemoteControl(top)) {
+            val next = when (event.keyCode) {
+                KeyEvent.KEYCODE_PAGE_DOWN, KeyEvent.KEYCODE_BUTTON_10 -> true
+                KeyEvent.KEYCODE_PAGE_UP, KeyEvent.KEYCODE_BUTTON_9 -> false
+                else -> null
+            }
+            if (next != null) {
+                if (event.action == KeyEvent.ACTION_UP) postOnce(event) { penSwipe.video(next) }
+                return null
+            }
+        }
+        if (top != null && event.keyCode in KeyEvent.KEYCODE_BUTTON_9..KeyEvent.KEYCODE_BUTTON_10 &&
+            PenAppRules.isSlidePage(top)) {
+            if (event.action == KeyEvent.ACTION_DOWN && event.repeatCount == 0) {
+                val up = event.keyCode == KeyEvent.KEYCODE_BUTTON_9
+                postOnce(event) {
+                    sendPenHaptic(4)
+                    penSwipe.pageKey(if (up) KeyEvent.KEYCODE_PAGE_UP else KeyEvent.KEYCODE_PAGE_DOWN)
+                }
+            }
+            return null
+        }
+        var consumeUp = false
+        if (event.keyCode == KeyEvent.KEYCODE_PAGE_DOWN || event.keyCode == KeyEvent.KEYCODE_PAGE_UP) {
+            val press = event.deviceId to event.downTime
+            if (event.action == KeyEvent.ACTION_DOWN && event.repeatCount == 0) {
+                triggeredPresses.removeIf { it != press }
+            } else if (event.action == KeyEvent.ACTION_UP) {
+                consumeUp = press in triggeredPresses
+            }
+        }
         val touchFilmKey = event.keyCode in KeyEvent.KEYCODE_BUTTON_8..KeyEvent.KEYCODE_BUTTON_10
         if (touchFilmKey && XiaomiStylusDevice.typeOf(event.device) != 8) return event
         if (touchFilmKey) {
@@ -149,8 +189,15 @@ class KeyHandler(private val context: Context) : DeviceKeyHandler {
         handler.post { handleEventOnMain(eventIdentity, effectiveSetting, stylusType) }
         val virtualLaserKey = event.keyCode == KeyEvent.KEYCODE_BUTTON_7 && stylusType == 8 &&
             hasVirtualLaserLease(event.device)
-        return if ((readAction(setting) == StylusSettingsContract.Action.LASER || virtualLaserKey) &&
-            stylusType in setOf(3, 8) && PenLaserController.isAvailable(context)) null else event
+        return if (consumeUp || (readAction(setting) == StylusSettingsContract.Action.LASER ||
+                virtualLaserKey) && stylusType in setOf(3, 8) && PenLaserController.isAvailable(context))
+            null else event
+    }
+
+    private fun postOnce(event: KeyEvent, block: () -> Unit) {
+        val identity = EventIdentity(event.deviceId, event.keyCode, event.scanCode, event.action,
+            event.repeatCount, event.downTime, event.eventTime)
+        handler.post { if (rememberEvent(identity)) block() }
     }
 
     private fun handleEventOnMain(event: EventIdentity, setting: ButtonSetting, stylusType: Int) {
@@ -223,6 +270,7 @@ class KeyHandler(private val context: Context) : DeviceKeyHandler {
                     val runnable = Runnable {
                         pendingActions.remove(event.keyCode)
                         if (!powerManager.isInteractive || isNotesEditorForeground()) return@Runnable
+                        triggeredPresses.add(event.deviceId to event.downTime)
                         val execute = Runnable { if (!isNotesEditorForeground()) executeAction(action) }
                         if (action == StylusSettingsContract.Action.OPEN_NOTES) {
                             stylusTouchMonitor.arm(event.keyCode, execute)
